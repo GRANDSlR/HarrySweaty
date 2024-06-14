@@ -1,18 +1,24 @@
 ﻿<Window x:Class="HarryManual.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Регистрация и вход" Height="300" Width="400">
+        Title="Регистрация и вход" Height="200" Width="300">
 
     <Grid>
         <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                <RadioButton IsChecked="True" x:Name="rbRegistration" Content="Регистрация"/>
+                <RadioButton x:Name="rbLogin" Content="Вход"/>
+            </StackPanel>
             <TextBlock Text="Логин:"/>
             <TextBox x:Name="UsernameTextBox"/>
             <TextBlock Text="Пароль:"/>
             <PasswordBox x:Name="PasswordTextBox"/>
-            <ToggleButton x:Name="toggleRegistration" Content="Регистрация"/>
             <Button x:Name="btnSubmit" Content="Войти" Click="btnSubmit_Click"/>
         </StackPanel>
     </Grid>
 </Window>
+
+
+
 
 

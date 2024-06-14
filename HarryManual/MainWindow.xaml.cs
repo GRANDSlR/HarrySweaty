@@ -4,7 +4,9 @@ using System.Data.Entity;
 using System.IO.Packaging;
 using System.Linq;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Markup;
+
 
 namespace HarryManual
 {
@@ -17,14 +19,14 @@ namespace HarryManual
         {
             InitializeComponent();
             dbContext = new DataBaseContext();
-        }
+        } 
 
         private void btnSubmit_Click(object sender, RoutedEventArgs e)
         {
             string username = UsernameTextBox.Text;
             string password = PasswordTextBox.Password;
 
-            if (toggleRegistration.IsChecked == true)
+            if (rbRegistration.IsChecked == true)
             {
                 Register(username, password);
             }
@@ -56,7 +58,8 @@ namespace HarryManual
                 var newUser = new User
                 {
                     Name = username,
-                    PasswordHash = password
+                    PasswordHash = password,
+                    Role = "user"
                 };
 
                 dbContext.Users.Add(newUser);
