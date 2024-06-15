@@ -1,87 +1,86 @@
-﻿using HarryManual;
-using HarryManual.DataAccess;
-using System.Data.Entity;
-using System.IO.Packaging;
+﻿using HarryManual.DataAccess;
+using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Markup;
-
+using System.Windows.Data;
+using System.Windows.Documents;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Shapes;
 
 namespace HarryManual
 {
-
+    /// <summary>
+    /// Логика взаимодействия для MainWindow.xaml
+    /// </summary>
     public partial class MainWindow : Window
     {
-        private DataBaseContext dbContext;
+        private User _user;
 
-        public MainWindow()
+        private List<CheckBox> checkedCheckBoxes = new List<CheckBox>();
+
+
+        public MainWindow(User user)
         {
             InitializeComponent();
-            dbContext = new DataBaseContext();
-        } 
+            _user = user;
 
-        private void btnSubmit_Click(object sender, RoutedEventArgs e)
-        {
-            string username = UsernameTextBox.Text;
-            string password = PasswordTextBox.Password;
-
-            if (rbRegistration.IsChecked == true)
+            foreach (CheckBox checkBox in FindVisualChildren<CheckBox>(Persons))
             {
-                Register(username, password);
-            }
-            else
-            {
-                Login(username, password);
+                checkBox.Checked += CheckBox_Checked;
+                checkBox.Unchecked += CheckBox_Unchecked;
             }
         }
 
-        private void Login(string username, string password)
+        private void CheckBox_Checked(object sender, RoutedEventArgs e)
         {
-            User user = dbContext.Users.FirstOrDefault(u => u.Name == username);
+            CheckBox checkBox = (CheckBox)sender;
+            checkedCheckBoxes.Add(checkBox);
+        }
 
-            if (user != null && user.PasswordHash == password)
+        private void CheckBox_Unchecked(object sender, RoutedEventArgs e)
+        {
+            CheckBox checkBox = (CheckBox)sender;
+            checkedCheckBoxes.Remove(checkBox);
+        }
+
+        private void GetCheckedValues()
+        {
+            foreach (CheckBox checkBox in checkedCheckBoxes)
             {
-                MessageBox.Show("Вы вошли в систему.");
-            }
-            else
-            {
-                MessageBox.Show("Неверное имя пользователя или пароль.");
+                //use checkBox.Content to get the content of the CheckBox
             }
         }
 
-
-        private void Register(string username, string password)
+        public static IEnumerable<T> FindVisualChildren<T>(DependencyObject depObj) where T : DependencyObject
         {
-            using (var dbContext = new DataBaseContext())
+            if (depObj != null)
             {
-                var newUser = new User
+                for (int i = 0; i < VisualTreeHelper.GetChildrenCount(depObj); i++)
                 {
-                    Name = username,
-                    PasswordHash = password,
-                    Role = "user"
-                };
+                    DependencyObject child = VisualTreeHelper.GetChild(depObj, i);
+                    if (child != null && child is T)
+                    {
+                        yield return (T)child;
+                    }
 
-                dbContext.Users.Add(newUser);
-                dbContext.SaveChanges();
-
-
-                if (dbContext.Users.Any(u => u.Name == username))
-                {
-                    MessageBox.Show("Пользователь успешно зарегистрирован.");
-                }
-                else
-                {
-                    MessageBox.Show("Ошибка при регистрации пользователя.");
+                    foreach (T childOfChild in FindVisualChildren<T>(child))
+                    {
+                        yield return childOfChild;
+                    }
                 }
             }
         }
 
+        private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
 
-        /*        private string CalculateHash(string input)
-                {
-                    // Ваш код для вычисления хэша пароля.
-                    // Здесь вы можете использовать, например, алгоритм SHA256.
-                }*/
+        }
     }
 }
+
