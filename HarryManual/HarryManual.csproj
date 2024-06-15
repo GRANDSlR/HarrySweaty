@@ -74,6 +74,12 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="DataAccess\DataBaseContext.cs" />
+    <Compile Include="DataAccess\HarryCarrier\Article.cs" />
+    <Compile Include="DataAccess\HarryCarrier\Film.cs" />
+    <Compile Include="DataAccess\HarryCarrier\Person.cs" />
+    <Compile Include="DataAccess\HarryCarrier\Person_Film.cs" />
+    <Compile Include="DataAccess\HarryCarrier\Person_Quote.cs" />
+    <Compile Include="DataAccess\HarryCarrier\Quote.cs" />
     <Compile Include="DataAccess\User.cs" />
     <Compile Include="AuthWindow.xaml.cs">
       <DependentUpon>AuthWindow.xaml</DependentUpon>

@@ -22,8 +22,11 @@ namespace HarryManual
     {
         private User _user;
 
-        private List<CheckBox> checkedPersonsFilter = new List<CheckBox>();
-        private List<CheckBox> checkedFilmsFilter = new List<CheckBox>();
+        private string _searchString = "";
+        private string _quote = "";
+        private List<CheckBox> _checkedPersonsFilter = new List<CheckBox>();
+        private List<CheckBox> _checkedFilmsFilter = new List<CheckBox>();
+        private RadioButton _radioFavState;
 
         public MainWindow(User user)
         {
@@ -32,39 +35,41 @@ namespace HarryManual
 
         }
 
-        private void InitCheckBoxes()
+        private void InitData()
         {
+            _searchString = MainSearchString.Text;
+
+            _quote = Quote.Text;
+
             var checkBoxes = Persons.Children.OfType<CheckBox>();
-            checkedPersonsFilter = checkBoxes.Where(cb => cb.IsChecked == true).ToList();
+            _checkedPersonsFilter = checkBoxes.Where(cb => cb.IsChecked == true).ToList();
 
             var checkFilterBoxes = Films.Children.OfType<CheckBox>();
-            checkedFilmsFilter = checkFilterBoxes.Where(cb => cb.IsChecked == true).ToList();
-        }
+            _checkedFilmsFilter = checkFilterBoxes.Where(cb => cb.IsChecked == true).ToList();
 
-        private void GetCheckedValues(object sender, RoutedEventArgs e)
-        {
-            InitCheckBoxes();
-
-            string result = "";
-
-            int counter = 0;
-
-            foreach (CheckBox checkBox in checkedPersonsFilter)
+            if (RadioFavAll.IsChecked == true)
             {
-                result += checkBox.Content;
-                counter++;
+                _radioFavState = RadioFavAll;
+            }
+            else if (RadioFavShow.IsChecked == true)
+            {
+                _radioFavState = RadioFavShow;
+            }
+            else if (RadioFavHide.IsChecked == true)
+            {
+                _radioFavState = RadioFavHide;
             }
 
-            MessageBox.Show(result + counter);
-
-
         }
 
-
-        private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
+        private void GetFilterValues(object sender, RoutedEventArgs e)
         {
+            InitData();
+
+
 
         }
+
     }
 }
 
