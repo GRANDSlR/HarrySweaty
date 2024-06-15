@@ -22,60 +22,44 @@ namespace HarryManual
     {
         private User _user;
 
-        private List<CheckBox> checkedCheckBoxes = new List<CheckBox>();
-
+        private List<CheckBox> checkedPersonsFilter = new List<CheckBox>();
+        private List<CheckBox> checkedFilmsFilter = new List<CheckBox>();
 
         public MainWindow(User user)
         {
             InitializeComponent();
             _user = user;
 
-            foreach (CheckBox checkBox in FindVisualChildren<CheckBox>(Persons))
+        }
+
+        private void InitCheckBoxes()
+        {
+            var checkBoxes = Persons.Children.OfType<CheckBox>();
+            checkedPersonsFilter = checkBoxes.Where(cb => cb.IsChecked == true).ToList();
+
+            var checkFilterBoxes = Films.Children.OfType<CheckBox>();
+            checkedFilmsFilter = checkFilterBoxes.Where(cb => cb.IsChecked == true).ToList();
+        }
+
+        private void GetCheckedValues(object sender, RoutedEventArgs e)
+        {
+            InitCheckBoxes();
+
+            string result = "";
+
+            int counter = 0;
+
+            foreach (CheckBox checkBox in checkedPersonsFilter)
             {
-                checkBox.Checked += CheckBox_Checked;
-                checkBox.Unchecked += CheckBox_Unchecked;
+                result += checkBox.Content;
+                counter++;
             }
+
+            MessageBox.Show(result + counter);
+
+
         }
 
-        private void CheckBox_Checked(object sender, RoutedEventArgs e)
-        {
-            CheckBox checkBox = (CheckBox)sender;
-            checkedCheckBoxes.Add(checkBox);
-        }
-
-        private void CheckBox_Unchecked(object sender, RoutedEventArgs e)
-        {
-            CheckBox checkBox = (CheckBox)sender;
-            checkedCheckBoxes.Remove(checkBox);
-        }
-
-        private void GetCheckedValues()
-        {
-            foreach (CheckBox checkBox in checkedCheckBoxes)
-            {
-                //use checkBox.Content to get the content of the CheckBox
-            }
-        }
-
-        public static IEnumerable<T> FindVisualChildren<T>(DependencyObject depObj) where T : DependencyObject
-        {
-            if (depObj != null)
-            {
-                for (int i = 0; i < VisualTreeHelper.GetChildrenCount(depObj); i++)
-                {
-                    DependencyObject child = VisualTreeHelper.GetChild(depObj, i);
-                    if (child != null && child is T)
-                    {
-                        yield return (T)child;
-                    }
-
-                    foreach (T childOfChild in FindVisualChildren<T>(child))
-                    {
-                        yield return childOfChild;
-                    }
-                }
-            }
-        }
 
         private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
         {

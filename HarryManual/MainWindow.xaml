@@ -9,10 +9,7 @@
     <Grid>
 
         <TabControl Grid.Row="1">
-            <TabItem Header="Избранное" Margin="70,-2,-74,0">
-                <Grid Background="#FFE5E5E5"/>
-            </TabItem>
-            <TabItem Header="Главная" Margin="-66,-2,62,0">
+            <TabItem Header="Главная" Margin="8,-2,-11,0">
                 <Grid Background="#FFE5E5E5">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="65*"></ColumnDefinition>
@@ -34,32 +31,20 @@
                             <RowDefinition/>
                         </Grid.RowDefinitions>
                         <TextBox  HorizontalAlignment="Center" TextWrapping="Wrap" Text="Поиск" VerticalAlignment="Center" Width="180" BorderThickness="0,0,0,0" Height="18" TextChanged="TextBox_TextChanged"/>
-                        <GroupBox x:Name="Persons" Header="Персонажи" Grid.Row="1">
-                            <Grid>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto"/>
-                                </Grid.RowDefinitions>
-
-                                <CheckBox Content="CheckBox" HorizontalAlignment="Left" Margin="9,7,0,0" Grid.Row="1" VerticalAlignment="Top" Height="16" Width="71"/>
-                                <CheckBox Content="CheckBox" HorizontalAlignment="Left" Margin="9,9,0,0" Grid.Row="2" VerticalAlignment="Top" Height="14" Width="71"/>
-                                <CheckBox Content="CheckBox" HorizontalAlignment="Left" Margin="9,32,0,0" Grid.Row="2" VerticalAlignment="Top" Height="15" Width="71"/>
-                            </Grid>
+                        <GroupBox Header="Персонажи" Grid.Row="1">
+                            <StackPanel  x:Name="Persons">
+                                <CheckBox Content="CheckBox1" HorizontalAlignment="Left" Margin="9,7,0,0" Grid.Row="1" VerticalAlignment="Top" Height="16" Width="71"/>
+                                <CheckBox Content="CheckBox2" HorizontalAlignment="Left" Margin="9,9,0,0" Grid.Row="2" VerticalAlignment="Top" Height="14" Width="71"/>
+                                <CheckBox Content="CheckBox3" HorizontalAlignment="Left" Margin="9,9,0,0" Grid.Row="2" VerticalAlignment="Top" Height="14" Width="71"/>
+                            </StackPanel>
                         </GroupBox>
 
-                        <GroupBox x:Name="Films" Header="Серии фильмов" Grid.Row="2">
-                            <Grid>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto"/>
-                                </Grid.RowDefinitions>
-
+                        <GroupBox Header="Серии фильмов" Grid.Row="2">
+                            <StackPanel  x:Name="Films">
                                 <CheckBox Content="CheckBox" HorizontalAlignment="Left" Margin="9,7,0,0" Grid.Row="1" VerticalAlignment="Top" Height="16" Width="71"/>
                                 <CheckBox Content="CheckBox" HorizontalAlignment="Left" Margin="9,9,0,0" Grid.Row="2" VerticalAlignment="Top" Height="14" Width="71"/>
-                                <CheckBox Content="CheckBox" HorizontalAlignment="Left" Margin="9,32,0,0" Grid.Row="2" VerticalAlignment="Top" Height="15" Width="71"/>
-                            </Grid>
+                                <CheckBox Content="CheckBox" HorizontalAlignment="Left" Margin="9,9,0,0" Grid.Row="2" VerticalAlignment="Top" Height="14" Width="71"/>
+                            </StackPanel>
                         </GroupBox>
 
 
@@ -68,14 +53,44 @@
 
                         </GroupBox>
 
-                        <Button Content="Отфильтровать" HorizontalAlignment="Center" Margin="0,10,0,0" Grid.Row="4" VerticalAlignment="Top" Width="174"/>
+                        <Button Click="GetCheckedValues" Content="Отфильтровать" HorizontalAlignment="Center" Margin="0,10,0,0" Grid.Row="4" VerticalAlignment="Top" Width="174"/>
                         <Button Content="Сбросить" HorizontalAlignment="Center" Grid.Row="4" VerticalAlignment="Center" Width="174"/>
 
 
                     </Grid>
 
+                    <StackPanel Grid.Column="1" x:Name="ResultStack">
+                        <GroupBox Header="Персонажи" Width="454">
+                            <StackPanel>
+                                <TextBox Background="Transparent" Text="Имя: Гарри Потный" BorderThickness="0,0,0,0"></TextBox>
+                                <TextBox Background="Transparent" Text="Факультет: Пуфиндор" BorderThickness="0,0,0,0"></TextBox>
+                                <TextBox Background="Transparent" Text="Описание: Очкарик с молнией на лбу" BorderThickness="0,0,0,0"></TextBox>
+                            </StackPanel>
+                        </GroupBox>
+
+                    </StackPanel>
+
+
                 </Grid>
+            </TabItem>
+            <TabItem Header="Избранное" Margin="13,-2,-18,0">
+                <Grid Background="#FFE5E5E5"/>
             </TabItem>
         </TabControl>
     </Grid>
 </Window>
+
+<!-- string xamlString = "<Button Content=\"Click me\" Click=\"Button_Click\" />";
+Button button = (Button)XamlReader.Parse(xamlString);
+stackPanel.Children.Add(button);
+ -->
+
+
+<!-- <GroupBox Header="Персонажи" Width="454">
+    <StackPanel>
+        <TextBox Background="Transparent" Text="Имя: Гарри Потный" BorderThickness="0,0,0,0"></TextBox>
+        <TextBox Background="Transparent" Text="Факультет: Пуфиндор" BorderThickness="0,0,0,0"></TextBox>
+        <TextBox Background="Transparent" Text="Описание: Очкарик с молнией на лбу" BorderThickness="0,0,0,0"></TextBox>
+    </StackPanel>
+    </GroupBox> -->
+        
