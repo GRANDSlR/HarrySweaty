@@ -16,12 +16,13 @@
                         <ColumnDefinition Width="235*"></ColumnDefinition>
                         <ColumnDefinition Width="97*"></ColumnDefinition>
                     </Grid.ColumnDefinitions>
-                    <Menu>
+                    <Menu Margin="0,4,0,-4">
                         <Button Content="Персонажи" Height="26" Width="116"/>
                         <Button Content="Статьи" Height="26" Width="116"/>
                         <Button Content="Фильмы" Height="26" Width="116"/>
                         <Button Content="Цитаты" Height="26" Width="116"/>
                         <Button Content="Все" Height="26" Width="116"/>
+                        <Button x:Name="AddCategory" Content="Добавить +" Height="26" Width="116" Click="AddCategory_Click_1"/>
                     </Menu>
                     <Grid Background="#FFF0F0F0" Grid.Column="2" Height="auto" Width="auto">
                         <Grid.RowDefinitions>
@@ -70,16 +71,10 @@
 
                     </Grid>
 
-                    <StackPanel Grid.Column="1" x:Name="ResultStack">
-                        <GroupBox Header="Персонажи" Width="454">
-                            <StackPanel>
-                                <TextBox Background="Transparent" Text="Имя: Гарри Потный" BorderThickness="0,0,0,0"></TextBox>
-                                <TextBox Background="Transparent" Text="Факультет: Пуфиндор" BorderThickness="0,0,0,0"></TextBox>
-                                <TextBox Background="Transparent" Text="Описание: Очкарик с молнией на лбу" BorderThickness="0,0,0,0"></TextBox>
-                            </StackPanel>
-                        </GroupBox>
+                    <ListView Grid.Column="1" x:Name="ResultStack">
+                        
 
-                    </StackPanel>
+                    </ListView>
 
 
                 </Grid>
@@ -88,12 +83,16 @@
                 <Grid Background="#FFE5E5E5"/>
             </TabItem>
         </TabControl>
+        <Button Content="Button" HorizontalAlignment="Left" Margin="869,147,0,0" VerticalAlignment="Top" Width="0"/>
     </Grid>
 </Window>
 
 <!-- string xamlString = "<Button Content=\"Click me\" Click=\"Button_Click\" />";
 Button button = (Button)XamlReader.Parse(xamlString);
 stackPanel.Children.Add(button);
+ -->
+
+<!-- myButton.Visibility = Visibility.Collapsed;
  -->
 
 
@@ -104,4 +103,15 @@ stackPanel.Children.Add(button);
         <TextBox Background="Transparent" Text="Описание: Очкарик с молнией на лбу" BorderThickness="0,0,0,0"></TextBox>
     </StackPanel>
     </GroupBox> -->
+
+<!-- 
+while (stackPanel.Children.Count > 0)
+{
+    stackPanel.Children.RemoveAt(stackPanel.Children.Count - 1);
+}
+-->
+    
+    
+
+
         

@@ -1,6 +1,7 @@
 ﻿using HarryManual.DataAccess;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,6 +10,7 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
+using System.Windows.Markup;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
@@ -20,6 +22,8 @@ namespace HarryManual
     /// </summary>
     public partial class MainWindow : Window
     {
+        private DataBaseContext dbContext;
+
         private User _user;
 
         private string _searchString = "";
@@ -31,7 +35,14 @@ namespace HarryManual
         public MainWindow(User user)
         {
             InitializeComponent();
+            dbContext = new DataBaseContext();
+
             _user = user;
+
+            if(user.Role != "admin")
+            {
+                AddCategory.Visibility = Visibility.Collapsed;
+            }
 
         }
 
@@ -66,10 +77,23 @@ namespace HarryManual
         {
             InitData();
 
-
+           
 
         }
 
+/*        private void AddCategory_Click(object sender, RoutedEventArgs e)
+        {
+            AdditionWindow additionWindow = new AdditionWindow();
+
+            additionWindow.Show();
+        }*/
+
+        private void AddCategory_Click_1(object sender, RoutedEventArgs e)
+        {
+            AdditionWindow additionWindow = new AdditionWindow();
+
+            additionWindow.Show();
+        }
     }
 }
 

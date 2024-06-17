@@ -20,3 +20,5 @@ C:\GitReps\HarryManual\HarryManual\obj\Debug\AuthWindow.g.cs
 C:\GitReps\HarryManual\HarryManual\obj\Debug\MainWindow.g.cs
 C:\GitReps\HarryManual\HarryManual\obj\Debug\HarryManual_MarkupCompile.lref
 C:\GitReps\HarryManual\HarryManual\obj\Debug\MainWindow.baml
+C:\GitReps\HarryManual\HarryManual\obj\Debug\AdditionWindow.g.cs
+C:\GitReps\HarryManual\HarryManual\obj\Debug\AdditionWindow.baml
