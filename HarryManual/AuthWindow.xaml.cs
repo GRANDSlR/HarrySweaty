@@ -63,6 +63,15 @@ namespace HarryManual
         {
             using (var dbContext = new DataBaseContext())
             {
+                User user = dbContext.Users.FirstOrDefault(u => u.Name == username);
+
+                if (user != null)
+                {
+                    MessageBox.Show("Ошибка. Такой пользователь уже существует");
+                    return;
+                }
+
+
                 var newUser = new User
                 {
                     Name = username,

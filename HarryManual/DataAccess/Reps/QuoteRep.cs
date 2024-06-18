@@ -14,18 +14,23 @@ namespace HarryManual.DataAccess.Reps
             _dbContext = dbContext;
         }
 
-        public void AddItem(Quote item)
+        public int AddItem(Quote item)
         {
             _dbContext.Quotes.Add(item);
             _dbContext.SaveChanges();
+
+            return item.QuoteId;
         }
 
-        public void DeleteItem(int itemId)
+        public int DeleteItem(int itemId)
         {
             var articles = _dbContext.Quotes.FirstOrDefault(a => a.QuoteId == itemId);
 
             _dbContext.Quotes.Remove(articles);
             _dbContext.SaveChanges();
+
+            return articles.QuoteId;
+
         }
 
         public List<Quote> GetItems()
@@ -35,7 +40,7 @@ namespace HarryManual.DataAccess.Reps
                 .ToList();
         }
 
-        public void UpdateItem(Quote item)
+        public int UpdateItem(Quote item)
         {
             var objectToUpdate = _dbContext.Quotes
                 .FirstOrDefault(b => b.QuoteId == item.QuoteId);
@@ -46,6 +51,8 @@ namespace HarryManual.DataAccess.Reps
 
                 _dbContext.SaveChanges();
             }
+
+            return objectToUpdate.QuoteId;
         }
     }
 }

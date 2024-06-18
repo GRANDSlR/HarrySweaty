@@ -14,18 +14,22 @@ namespace HarryManual.DataAccess.Reps
             _dbContext = dbContext;
         }
 
-        public void AddItem(CustomCategory item)
+        public int AddItem(CustomCategory item)
         {
             _dbContext.CustomCategories.Add(item);
             _dbContext.SaveChanges();
+
+            return item.CategoryId;
         }
 
-        public void DeleteItem(int itemId)
+        public int DeleteItem(int itemId)
         {
             var articles = _dbContext.CustomCategories.FirstOrDefault(a => a.CategoryId == itemId);
 
             _dbContext.CustomCategories.Remove(articles);
             _dbContext.SaveChanges();
+
+            return articles.CategoryId;
         }
 
         public List<CustomCategory> GetItems()
@@ -35,7 +39,7 @@ namespace HarryManual.DataAccess.Reps
                 .ToList();
         }
 
-        public void UpdateItem(CustomCategory item)
+        public int UpdateItem(CustomCategory item)
         {
             var objectToUpdate = _dbContext.CustomCategories
                 .FirstOrDefault(b => b.CategoryId == item.CategoryId);
@@ -46,6 +50,8 @@ namespace HarryManual.DataAccess.Reps
                 
                 _dbContext.SaveChanges();
             }
+
+            return objectToUpdate.CategoryId;
         }
     }
 }

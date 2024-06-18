@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace HarryManual.DataAccess.Reps
 {
-    public class PersonRep : IRep<Person>
+    public class PersonRep : IRepExtend<Person>
     {
         private DataBaseContext _dbContext;
 
@@ -14,18 +14,22 @@ namespace HarryManual.DataAccess.Reps
             _dbContext = dbContext;
         }
 
-        public void AddItem(Person item)
+        public int AddItem(Person item)
         {
             _dbContext.Persons.Add(item);
             _dbContext.SaveChanges();
+
+            return item.PersonId;
         }
 
-        public void DeleteItem(int itemId)
+        public int DeleteItem(int itemId)
         {
             var articles = _dbContext.Persons.FirstOrDefault(a => a.PersonId == itemId);
 
             _dbContext.Persons.Remove(articles);
             _dbContext.SaveChanges();
+
+            return articles.PersonId;
         }
 
         public List<Person> GetItems()
@@ -35,7 +39,15 @@ namespace HarryManual.DataAccess.Reps
                 .ToList();
         }
 
-        public void UpdateItem(Person item)
+        public List<Person> GetItems(string title)
+        {
+            return _dbContext.Persons
+                .AsNoTracking()
+                .Where(a => a.Name.ToLower().Contains(title.ToLower()))
+                .ToList();
+        }
+
+        public int UpdateItem(Person item)
         {
             var objectToUpdate = _dbContext.Persons
                 .FirstOrDefault(b => b.PersonId == item.PersonId);
@@ -48,6 +60,8 @@ namespace HarryManual.DataAccess.Reps
 
                 _dbContext.SaveChanges();
             }
+
+            return objectToUpdate.PersonId;
         }
     }
 }

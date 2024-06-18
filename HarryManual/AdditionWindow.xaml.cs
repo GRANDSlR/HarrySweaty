@@ -1,7 +1,13 @@
-﻿using System.Data.Entity;
+﻿using HarryManual.DataAccess.HarryCarrier;
+using HarryManual.DataAccess.Reps;
+using HarryManual.Dependencies;
+using System.Collections.Generic;
+using System.Data.Entity;
+using System.Reflection.Emit;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
+using Label = System.Windows.Controls.Label;
 
 namespace HarryManual
 {
@@ -10,14 +16,26 @@ namespace HarryManual
     /// </summary>
     public partial class AdditionWindow : Window
     {
-        private DataBaseContext dbContext;
+        private readonly IRep<Article> _articleRep;
+        private readonly IRep<Quote> _quoteRep;
+        private readonly IRep<Person_Quote> _person_QuoteRep;
+        private readonly IRepExtend<Person> _personRep;
 
         public AdditionWindow()
         {
             InitializeComponent();
-            dbContext = new DataBaseContext();
 
+            _quoteRep = new QuoteRep(new DataBaseContext());
+            _person_QuoteRep = new Person_QuoteRep(new DataBaseContext());
+            _personRep = new PersonRep(new DataBaseContext());
         }
+
+        private void CategoryAddition(object sender, RoutedEventArgs e)
+        {
+            
+        }
+
+
 
         private void QuoteRadio(object sender, RoutedEventArgs e)
         {
@@ -50,8 +68,46 @@ namespace HarryManual
             ((StackPanel)listViewItem.Content).Children.Add(contentGroupBox);
             ((StackPanel)listViewItem.Content).Children.Add(authorGroupBox);
 
+            Button button = new Button();
+            button.Content = "Запись";
+            button.Width = 100;
+            button.Click += (_sender, _e) => ReadFormData();
+            ((StackPanel)listViewItem.Content).Children.Add(button);
+
             ResultView.Items.Clear();
             ResultView.Items.Add(listViewItem);
+
+            void ReadFormData()
+            {
+                string contentText = contentTextBox.Text;
+                string authorText = authorTextBox.Text;
+
+                if(contentText.Length == 0 || authorText.Length == 0)
+                {
+                    MessageBox.Show("Ошибка. Не все поля заполнены!");
+                    return;
+                }
+
+                int addedQuoteId = _quoteRep.AddItem(new Quote { 
+                    Content = contentText
+                });
+
+                List<Person> personByName = _personRep.GetItems(authorText);
+
+                if (personByName.Count == 0)
+                {
+                    MessageBox.Show("Ошибка. Автор не найден!");
+                    return;
+                }
+
+                int addedPerson_QuoteId = _person_QuoteRep.AddItem(new Person_Quote { 
+                    PersonId = personByName[0].PersonId,
+                    QuoteId = addedQuoteId
+                });
+
+                MessageBox.Show("Данные записаны");
+
+            }
 
         }
 
@@ -108,8 +164,37 @@ namespace HarryManual
             ((StackPanel)listViewItem.Content).Children.Add(groupBoxGender);
             ((StackPanel)listViewItem.Content).Children.Add(groupBoxDescription);
 
+            Button button = new Button();
+            button.Content = "Запись";
+            button.Width = 100;
+            button.Click += (_sender, _e) => ReadFormData();
+            ((StackPanel)listViewItem.Content).Children.Add(button);
+
             ResultView.Items.Clear();
             ResultView.Items.Add(listViewItem);
+
+            void ReadFormData()
+            {
+                string nameText = textBoxName.Text;
+                string descriptionText = textBoxDescription.Text;
+                bool? maleSex = radioButtonMale.IsChecked;
+
+                if (nameText.Length == 0 || descriptionText.Length == 0)
+                {
+                    MessageBox.Show("Ошибка. Не все поля заполнены!");
+                    return;
+                }
+
+                int addedPersonId = _personRep.AddItem(new Person
+                {
+                    Name = nameText,
+                    Sex = (bool)maleSex ? "мужской" : "женский",
+                    Description = descriptionText
+                });
+
+                MessageBox.Show("Данные записаны");
+
+            }
 
 
         }

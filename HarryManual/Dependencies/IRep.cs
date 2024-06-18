@@ -5,9 +5,9 @@ namespace HarryManual.Dependencies
 {
     internal interface IRep<T>
     {
-        void AddItem(T item);
+        int AddItem(T item);
         List<T> GetItems();
-        void UpdateItem(T item);
-        void DeleteItem(int itemId);
+        int UpdateItem(T item);
+        int DeleteItem(int itemId);
     }
 }
