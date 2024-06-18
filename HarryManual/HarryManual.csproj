@@ -82,11 +82,23 @@
     </Compile>
     <Compile Include="DataAccess\DataBaseContext.cs" />
     <Compile Include="DataAccess\HarryCarrier\Article.cs" />
+    <Compile Include="DataAccess\HarryCarrier\CustomCategory.cs" />
+    <Compile Include="DataAccess\HarryCarrier\CustomCategory_Note.cs" />
     <Compile Include="DataAccess\HarryCarrier\Film.cs" />
+    <Compile Include="DataAccess\HarryCarrier\Notes.cs" />
     <Compile Include="DataAccess\HarryCarrier\Person.cs" />
     <Compile Include="DataAccess\HarryCarrier\Person_Film.cs" />
     <Compile Include="DataAccess\HarryCarrier\Person_Quote.cs" />
     <Compile Include="DataAccess\HarryCarrier\Quote.cs" />
+    <Compile Include="DataAccess\Reps\QuoteRep.cs" />
+    <Compile Include="DataAccess\Reps\Person_QuoteRep.cs" />
+    <Compile Include="DataAccess\Reps\Person_FilmRep.cs" />
+    <Compile Include="DataAccess\Reps\NoteRep.cs" />
+    <Compile Include="DataAccess\Reps\CustomCategory_NoteRep.cs" />
+    <Compile Include="DataAccess\Reps\CustomCategoryRep.cs" />
+    <Compile Include="DataAccess\Reps\PersonRep.cs" />
+    <Compile Include="DataAccess\Reps\FilmRep.cs" />
+    <Compile Include="DataAccess\Reps\ArticleRep.cs" />
     <Compile Include="DataAccess\User.cs" />
     <Compile Include="AuthWindow.xaml.cs">
       <DependentUpon>AuthWindow.xaml</DependentUpon>
@@ -98,6 +110,7 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Dependencies\IRep.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
     </Compile>
