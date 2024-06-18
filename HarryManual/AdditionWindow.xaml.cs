@@ -1,11 +1,14 @@
 ﻿using HarryManual.DataAccess.HarryCarrier;
 using HarryManual.DataAccess.Reps;
 using HarryManual.Dependencies;
+using System;
 using System.Collections.Generic;
 using System.Data.Entity;
+using System.Linq;
 using System.Reflection.Emit;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using Label = System.Windows.Controls.Label;
 
@@ -20,14 +23,20 @@ namespace HarryManual
         private readonly IRep<Quote> _quoteRep;
         private readonly IRep<Person_Quote> _person_QuoteRep;
         private readonly IRepExtend<Person> _personRep;
+        private readonly IRep<Film> _filmRep;
+        private readonly IRep<Person_Film> _person_Film;
+
 
         public AdditionWindow()
         {
             InitializeComponent();
 
+            _articleRep = new ArticleRep(new DataBaseContext());
             _quoteRep = new QuoteRep(new DataBaseContext());
             _person_QuoteRep = new Person_QuoteRep(new DataBaseContext());
             _personRep = new PersonRep(new DataBaseContext());
+            _filmRep = new FilmRep(new DataBaseContext());
+            _person_Film = new Person_FilmRep(new DataBaseContext());
         }
 
         private void CategoryAddition(object sender, RoutedEventArgs e)
@@ -193,7 +202,7 @@ namespace HarryManual
                 });
 
                 MessageBox.Show("Данные записаны");
-
+                  
             }
 
 
@@ -233,14 +242,44 @@ namespace HarryManual
             ((StackPanel)listViewItem.Content).Children.Add(groupBoxTitle);
             ((StackPanel)listViewItem.Content).Children.Add(groupBoxDescription);
 
+            Button button = new Button();
+            button.Content = "Запись";
+            button.Width = 100;
+            button.Click += (_sender, _e) => ReadFormData();
+            ((StackPanel)listViewItem.Content).Children.Add(button);
+
             ResultView.Items.Clear();
             ResultView.Items.Add(listViewItem);
+
+            void ReadFormData()
+            {
+                string nameText = textBoxTitle.Text;
+                string descriptionText = textBoxDescription.Text;
+
+                if (nameText.Length == 0 || descriptionText.Length == 0)
+                {
+                    MessageBox.Show("Ошибка. Не все поля заполнены!");
+                    return;
+                }
+
+                int addedPersonId = _articleRep.AddItem(new Article
+                {
+                    Title = nameText,
+                    Description = descriptionText,
+                    DateOfPublication = DateTime.Now
+                });
+
+                MessageBox.Show("Данные записаны");
+
+            }
 
 
         }
 
         private void FilmRadio(object sender, RoutedEventArgs e)
         {
+            List<int> actorsIds = new List<int>();
+
             Label label = new Label();
             label.Content = "Фильм";
             label.Width = 48;
@@ -286,6 +325,29 @@ namespace HarryManual
 
             groupBoxDate.Content = datePicker;
 
+            GroupBox groupBoxActors = new GroupBox();
+            groupBoxActors.Height = 100;
+            groupBoxActors.Header = "Актеры";
+
+            Label actorLabel = new Label();
+            actorLabel.Content = "Актеры: ";
+            actorLabel.HorizontalAlignment = HorizontalAlignment.Left;
+
+            TextBox textBoxActor = new TextBox();
+            textBoxActor.HorizontalAlignment = HorizontalAlignment.Left;
+            textBoxActor.TextWrapping = TextWrapping.Wrap;
+            textBoxActor.Width = 630;
+
+            Button actorAdditionbutton = new Button();
+            actorAdditionbutton.Content = "Добавить актера";
+            actorAdditionbutton.Width = 100;
+            actorAdditionbutton.Click += (_sender, _e) => AddActor();
+
+            groupBoxActors.Content = new StackPanel();
+            ((StackPanel)groupBoxActors.Content).Children.Add(actorLabel);
+            ((StackPanel)groupBoxActors.Content).Children.Add(textBoxActor);
+            ((StackPanel)groupBoxActors.Content).Children.Add(actorAdditionbutton);
+
             ListViewItem listViewItem = new ListViewItem();
             listViewItem.Content = new StackPanel();
             ((StackPanel)listViewItem.Content).Children.Add(label);
@@ -293,10 +355,88 @@ namespace HarryManual
             ((StackPanel)listViewItem.Content).Children.Add(groupBoxNumber);
             ((StackPanel)listViewItem.Content).Children.Add(groupBoxDescription);
             ((StackPanel)listViewItem.Content).Children.Add(groupBoxDate);
+            ((StackPanel)listViewItem.Content).Children.Add(groupBoxActors);
 
+
+            Button button = new Button();
+            button.Content = "Запись";
+            button.Width = 100;
+            button.Click += (_sender, _e) => ReadFormData();
+            ((StackPanel)listViewItem.Content).Children.Add(button);
 
             ResultView.Items.Clear();
             ResultView.Items.Add(listViewItem);
+
+            void AddActor()
+            {
+                string nameText = textBoxActor.Text;
+
+                List<Person> existPerson = _personRep.GetItems(nameText);
+
+                if(existPerson == null)
+                {
+                    MessageBox.Show("Ошибка. Такого актера нет!");
+                    return;
+                }
+
+                List<Person_Film> person_Film = _person_Film.GetItems();
+
+                if(person_Film.Count != 0 && person_Film.FirstOrDefault(a => a.PersonId == existPerson[0].PersonId) != null)
+                {
+                    MessageBox.Show("Ошибка. Такой актер уже есть!");
+                    return;
+                }
+
+                if (nameText.Length == 0)
+                {
+                    MessageBox.Show("Ошибка. Не все поля заполнены!");
+                    return;
+                }
+
+                actorLabel.Content += nameText + " ";
+
+                actorsIds.Add(existPerson[0].PersonId);
+            }
+
+            void ReadFormData()
+            {
+                string nameText = textBoxTitle.Text;
+                string descriptionText = textBoxDescription.Text;
+                string part = textBoxNumber.Text;
+                DateTime selectedDate = datePicker.SelectedDate ?? DateTime.MinValue;
+                
+                int partNumber;
+                bool success = int.TryParse(part, out partNumber);
+
+                if (nameText.Length == 0 || descriptionText.Length == 0 || !success)
+                {
+                    MessageBox.Show("Ошибка. Не все поля заполнены!");
+                    return;
+                }
+
+                int addedFilmId = _filmRep.AddItem(new Film
+                {
+                    Title = nameText,
+                    Description = descriptionText,
+                    Part = partNumber,
+                    DateOfPublication = selectedDate
+                });
+
+                if(actorsIds.Count > 0)
+                {
+                    foreach(int id in actorsIds)
+                    {
+                        int addedId = _person_Film.AddItem(new Person_Film
+                        {
+                            PersonId = id,
+                            FilmId = addedFilmId
+                        });
+                    }
+                }
+
+                MessageBox.Show("Данные записаны");
+
+            }
 
 
         }

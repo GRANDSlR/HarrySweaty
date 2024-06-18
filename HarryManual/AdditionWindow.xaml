@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:HarryManual"
         mc:Ignorable="d"
-        Title="AdditionWindow" Height="350" Width="850">
+        Title="AdditionWindow" Height="450" Width="850">
     <Grid Margin="0,0,0,4">
 
         <Grid.ColumnDefinitions>
@@ -13,20 +13,22 @@
             <ColumnDefinition Width="641*"></ColumnDefinition>
         </Grid.ColumnDefinitions>
 
-        <Expander Grid.Column="0" HorizontalAlignment="Left" Height="100" Header="Категория" Margin="10,10,0,0" VerticalAlignment="Top" Width="100" IsExpanded="False">
-            <GroupBox Header="" Margin="0,0,0,-13">
-                <StackPanel>
-                    <RadioButton Content="Цитаты" Checked="QuoteRadio"/>
-                    <RadioButton Content="Персонажи" Checked="PersRadio"/>
-                    <RadioButton Content="Статьи" Checked="ArticleRadio"/>
-                    <RadioButton Content="Фильмы" Checked="FilmRadio"/>
+        <StackPanel Grid.Column="0">
+            <Button Click="CategoryAddition" Content="Добавить категорию" Height="30" Width="130" Margin="0,10,0,0"/>
+            <Expander Height="100" Header="Категория" Width="100" IsExpanded="False" Margin="0,10,0,0">
+                <GroupBox Header="" Margin="0,0,0,-13">
+                    <StackPanel>
+                        <RadioButton Content="Цитаты" Checked="QuoteRadio"/>
+                        <RadioButton Content="Персонажи" Checked="PersRadio"/>
+                        <RadioButton Content="Статьи" Checked="ArticleRadio"/>
+                        <RadioButton Content="Фильмы" Checked="FilmRadio"/>
 
-                </StackPanel>
-            </GroupBox>
+                    </StackPanel>
+                </GroupBox>
 
-        </Expander>
+            </Expander>
+        </StackPanel>
 
-        <Button Click="CategoryAddition" Content="Добавить" HorizontalAlignment="Center" Margin="0,221,0,0" VerticalAlignment="Top" Height="40" Width="126"/>
 
         <ListView  Grid.Column="1" x:Name="ResultView">
             <!-- Здесь могут быть элементы списка -->
@@ -71,8 +73,8 @@
     <TextBox HorizontalAlignment="Left" TextWrapping="Wrap" Width="630"/>
 </GroupBox>
 -->
-    
-    
+
+
 <!-- 
     <Label Content="Статья" Width="48"/>
     <GroupBox Height="40" Header="Название">
@@ -84,7 +86,7 @@
     </GroupBox>
     -->
 
-    
+
 <!-- 
     <Label Content="Фильм" Width="48"/>
 <GroupBox Height="40" Header="Название">
