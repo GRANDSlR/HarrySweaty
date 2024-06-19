@@ -72,16 +72,12 @@
                     </Grid>
 
                     <ListView Grid.Column="1" x:Name="ResultStack">
-                        
-
                     </ListView>
 
 
                 </Grid>
             </TabItem>
-            <TabItem Header="Избранное" Margin="13,-2,-18,0">
-                <Grid Background="#FFE5E5E5"/>
-            </TabItem>
+
         </TabControl>
         <Button Content="Button" HorizontalAlignment="Left" Margin="869,147,0,0" VerticalAlignment="Top" Width="0"/>
     </Grid>
