@@ -41,7 +41,9 @@ namespace HarryManual
 
         private void CategoryAddition(object sender, RoutedEventArgs e)
         {
-            
+            CategotyAdditionWindow categotyAdditionWindow = new CategotyAdditionWindow();
+
+            categotyAdditionWindow.Show();
         }
 
 

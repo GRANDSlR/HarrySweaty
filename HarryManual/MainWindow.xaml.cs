@@ -3,6 +3,7 @@ using HarryManual.DataAccess.HarryCarrier;
 using HarryManual.DataAccess.Reps;
 using HarryManual.Dependencies;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
@@ -84,7 +85,7 @@ namespace HarryManual
         private void AddView(object sender, RoutedEventArgs e, Person person, List<Film> films, List<Quote> quotes)
         {
             GroupBox groupBox = new GroupBox();
-            groupBox.Header = "Персонажи";
+            groupBox.Header = "Персонаж";
             groupBox.Width = 454;
 
             StackPanel stackPanel = new StackPanel();
@@ -128,7 +129,7 @@ namespace HarryManual
         private void AddView(object sender, RoutedEventArgs e, Person person, Quote quote)
         {
             GroupBox groupBox = new GroupBox();
-            groupBox.Header = "Цитаты";
+            groupBox.Header = "Цитата";
             groupBox.Width = 454;
 
             StackPanel stackPanel = new StackPanel();
@@ -167,7 +168,7 @@ namespace HarryManual
         private void AddView(object sender, RoutedEventArgs e, Article article)
         {
             GroupBox groupBox = new GroupBox();
-            groupBox.Header = "Статьи";
+            groupBox.Header = "Статья";
             groupBox.Width = 454;
 
             StackPanel stackPanel = new StackPanel();
@@ -206,6 +207,63 @@ namespace HarryManual
             }
         }
 
+        private void AddView(object sender, RoutedEventArgs e, Film film, List<Person> persons)
+        {
+            GroupBox groupBox = new GroupBox();
+            groupBox.Header = "Фильм";
+            groupBox.Width = 454;
+
+            StackPanel stackPanel = new StackPanel();
+
+            TextBox nameTextBox = new TextBox();
+            nameTextBox.Background = Brushes.Transparent;
+            nameTextBox.Text = "Название: " + film.Title;
+            nameTextBox.BorderThickness = new Thickness(0);
+
+            TextBox facultyTextBox = new TextBox();
+            facultyTextBox.Background = Brushes.Transparent;
+            facultyTextBox.Text = "Часть: " + film.Part;
+            facultyTextBox.BorderThickness = new Thickness(0);
+
+            TextBox descriptionTextBox = new TextBox();
+            descriptionTextBox.Background = Brushes.Transparent;
+            descriptionTextBox.Text = "Описание: " + film.Description;
+            descriptionTextBox.BorderThickness = new Thickness(0);
+
+            string artistNames = "";
+
+            foreach (Person person in persons)
+            {
+                artistNames += person.Name + " ";
+            }
+
+            TextBox textBox = new TextBox();
+            textBox.Background = Brushes.Transparent;
+            textBox.Text = artistNames;
+            textBox.Margin = new Thickness(0, 10, 0, 0);
+            textBox.BorderThickness = new Thickness(0);
+
+            stackPanel.Children.Add(nameTextBox);
+            stackPanel.Children.Add(facultyTextBox);
+            stackPanel.Children.Add(descriptionTextBox);
+            stackPanel.Children.Add(textBox);
+
+            groupBox.Content = stackPanel;
+                        
+            groupBox.MouseDoubleClick += (_sender, _e) => ClickEvent();
+
+            ListViewItem listViewItem = new ListViewItem();
+            listViewItem.Content = groupBox;
+
+            ResultStack.Items.Add(listViewItem);
+
+            void ClickEvent()
+            {
+                ItemWindow itemWindow = new ItemWindow(film, persons);
+
+                itemWindow.Show();
+            }
+        }
 
         private void GetFilterValues(object sender, RoutedEventArgs e)
         {
@@ -249,8 +307,19 @@ namespace HarryManual
                 AddView(sender, e, appropriatePerson, quote);
             }
 
+
             foreach(Article article in articles)
                 AddView(sender, e, article);
+
+
+            foreach(Film film in films)
+            {
+                Person_Film appropriatePerson_Film = person_films.FirstOrDefault(a => a.FilmId == film.FilmId);
+
+                List<Person> appropriatePersons = persons.Where(a => a.PersonId == appropriatePerson_Film.PersonId).ToList();
+
+                AddView(sender, e, film, appropriatePersons);
+            }
         }
 
         private void AddCategory_Click_1(object sender, RoutedEventArgs e)

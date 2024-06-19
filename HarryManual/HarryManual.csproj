@@ -80,6 +80,9 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="CategotyAdditionWindow.xaml.cs">
+      <DependentUpon>CategotyAdditionWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="DataAccess\DataBaseContext.cs" />
     <Compile Include="DataAccess\HarryCarrier\Article.cs" />
     <Compile Include="DataAccess\HarryCarrier\CustomCategory.cs" />
@@ -104,6 +107,10 @@
       <DependentUpon>AuthWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="CategotyAdditionWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="ItemWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
