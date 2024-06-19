@@ -25,6 +25,9 @@ namespace HarryManual
         private readonly IRepExtend<Person> _personRep;
         private readonly IRep<Film> _filmRep;
         private readonly IRep<Person_Film> _person_Film;
+        private readonly IRep<CustomCategory> _customCategoryRep;
+        private readonly IRep<Notes> _noteRep;
+        private readonly IRep<CustomCategory_Note> _customCategory_NoteRep;
 
 
         public AdditionWindow()
@@ -37,6 +40,10 @@ namespace HarryManual
             _personRep = new PersonRep(new DataBaseContext());
             _filmRep = new FilmRep(new DataBaseContext());
             _person_Film = new Person_FilmRep(new DataBaseContext());
+            _customCategoryRep = new CustomCategoryRep(new DataBaseContext());
+            _noteRep = new NoteRep(new DataBaseContext());
+            _customCategory_NoteRep = new CustomCategory_NoteRep(new DataBaseContext());
+
         }
 
         private void CategoryAddition(object sender, RoutedEventArgs e)
@@ -443,5 +450,122 @@ namespace HarryManual
 
         }
 
+        private void CustomRadio(object sender, RoutedEventArgs e, CustomCategory category)
+        {
+            Label label = new Label();
+            label.Content = category.CategoryName;
+
+            GroupBox groupBoxTitle = new GroupBox();
+            groupBoxTitle.Height = 40;
+            groupBoxTitle.Header = "Название";
+
+            TextBox textBoxTitle = new TextBox();
+            textBoxTitle.HorizontalAlignment = HorizontalAlignment.Left;
+            textBoxTitle.TextWrapping = TextWrapping.Wrap;
+            textBoxTitle.Width = 630;
+
+            groupBoxTitle.Content = textBoxTitle;
+
+            GroupBox groupBoxDescription = new GroupBox();
+            groupBoxDescription.Height = 100;
+            groupBoxDescription.Header = "Описание";
+
+            TextBox textBoxDescription = new TextBox();
+            textBoxDescription.HorizontalAlignment = HorizontalAlignment.Left;
+            textBoxDescription.TextWrapping = TextWrapping.Wrap;
+            textBoxDescription.Width = 630;
+
+            groupBoxDescription.Content = textBoxDescription;
+
+            ListViewItem listViewItem = new ListViewItem();
+            listViewItem.Content = new StackPanel();
+            ((StackPanel)listViewItem.Content).Children.Add(label);
+            ((StackPanel)listViewItem.Content).Children.Add(groupBoxTitle);
+            ((StackPanel)listViewItem.Content).Children.Add(groupBoxDescription);
+
+            Button button = new Button();
+            button.Content = "Запись";
+            button.Width = 100;
+            button.Click += (_sender, _e) => ReadFormData();
+            ((StackPanel)listViewItem.Content).Children.Add(button);
+
+            ResultView.Items.Clear();
+            ResultView.Items.Add(listViewItem);
+
+            void ReadFormData()
+            {
+                string nameText = textBoxTitle.Text;
+                string descriptionText = textBoxDescription.Text;
+
+                if (nameText.Length == 0 || descriptionText.Length == 0)
+                {
+                    MessageBox.Show("Ошибка. Не все поля заполнены!");
+                    return;
+                }
+
+                int addedNoteId = _noteRep.AddItem(new Notes
+                {
+                    NoteTitle = nameText,
+                    NoteContent = descriptionText
+                });
+
+                int addedCategoryNote = _customCategory_NoteRep.AddItem(new CustomCategory_Note
+                {
+                    CustomCategoryId = category.CategoryId,
+                    NoteId = addedNoteId
+                });
+
+                MessageBox.Show("Данные записаны");
+
+            }
+
+
+        }
+
+        private void GetCategories(object sender, RoutedEventArgs e)
+        {
+            StackPanel stackPanel = new StackPanel();
+
+            RadioButton radioButton1 = new RadioButton();
+            radioButton1.Content = "Цитаты";
+            radioButton1.Checked += QuoteRadio;
+
+            RadioButton radioButton2 = new RadioButton();
+            radioButton2.Content = "Персонажи";
+            radioButton2.Checked += PersRadio;
+
+            RadioButton radioButton3 = new RadioButton();
+            radioButton3.Content = "Статьи";
+            radioButton3.Checked += ArticleRadio;
+
+            RadioButton radioButton4 = new RadioButton();
+            radioButton4.Content = "Фильмы";
+            radioButton4.Checked += FilmRadio;
+
+            stackPanel.Children.Add(radioButton1);
+            stackPanel.Children.Add(radioButton2);
+            stackPanel.Children.Add(radioButton3);
+            stackPanel.Children.Add(radioButton4);
+
+            List<CustomCategory> customCategories = _customCategoryRep.GetItems();
+
+            foreach (CustomCategory category in customCategories)
+            {
+                RadioButton radioButton = new RadioButton();
+                radioButton.Content = category.CategoryName;
+                radioButton.Checked += (_sender, _e) => CustomRadio(sender, e, category);
+
+                stackPanel.Children.Add(radioButton);
+            }
+
+            RadioView.Items.Clear();
+            RadioView.Items.Add(stackPanel);
+        }
+
+
+        private void Expander_Expanded(object sender, RoutedEventArgs e)
+        {
+            GetCategories(sender, e);
+        }
     }
 }

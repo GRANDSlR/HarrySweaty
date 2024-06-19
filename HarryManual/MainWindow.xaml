@@ -59,7 +59,7 @@
                         <GroupBox Header="Избранное" Grid.Row="4" Grid.ColumnSpan="2">
                             <StackPanel  x:Name="Favorite">
                                 <RadioButton x:Name="RadioFavAll" Content="Все" />
-                                <RadioButton x:Name="RadioFavShow" Content="Отобразить избранное" />
+                                <RadioButton x:Name="RadioFavShow" Content="Только избранное" />
                                 <RadioButton x:Name="RadioFavHide" Content="Скрыть избранное" />
                             </StackPanel>
                         </GroupBox>

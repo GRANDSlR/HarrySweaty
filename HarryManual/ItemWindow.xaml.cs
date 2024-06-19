@@ -40,6 +40,13 @@ namespace HarryManual
             AddView(article);
         }
 
+        public ItemWindow(Notes note, CustomCategory category)
+        {
+            InitializeComponent();
+
+            AddView(note, category);
+        }
+
         private void AddView(Person person, List<Film> films, List<Quote> quotes)
         {
             GroupBox groupBox = new GroupBox();
@@ -236,6 +243,41 @@ namespace HarryManual
 
             ContentView.Items.Add(listViewItem);
         }
+
+        private void AddView(Notes note, CustomCategory category)
+        {
+            GroupBox groupBox = new GroupBox();
+            groupBox.Header = category.CategoryName;
+            groupBox.Width = 454;
+
+            StackPanel stackPanel = new StackPanel();
+
+            TextBox nameTextBox = new TextBox();
+            nameTextBox.Background = Brushes.Transparent;
+            nameTextBox.Text = note.NoteTitle;
+            nameTextBox.FontWeight = FontWeights.Bold;
+
+            nameTextBox.BorderThickness = new Thickness(0);
+
+
+            TextBox descriptionTextBox = new TextBox();
+            descriptionTextBox.Background = Brushes.Transparent;
+            descriptionTextBox.Text = note.NoteContent;
+            descriptionTextBox.Margin = new Thickness(0, 10, 0, 0);
+            descriptionTextBox.BorderThickness = new Thickness(0);
+
+            stackPanel.Children.Add(nameTextBox);
+            stackPanel.Children.Add(descriptionTextBox);
+
+            groupBox.Content = stackPanel;
+
+            ListViewItem listViewItem = new ListViewItem();
+            listViewItem.Content = groupBox;
+
+            ContentView.Items.Add(listViewItem);
+
+        }
+
 
     }
 }

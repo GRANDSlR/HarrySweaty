@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:HarryManual"
         mc:Ignorable="d"
-        Title="CategotyAdditionWindow" Height="110" Width="300">
+        Title="CategotyAdditionWindow" Height="130" Width="320">
     <Grid>
         <Label Content="Добавление категории" HorizontalAlignment="Center" VerticalAlignment="Top"/>
         <GroupBox Header="Название" Margin="0,19,0,0">

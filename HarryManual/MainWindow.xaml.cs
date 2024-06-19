@@ -33,6 +33,9 @@ namespace HarryManual
         private readonly IRepExtend<Person> _personRep;
         private readonly IRep<Film> _filmRep;
         private readonly IRep<Person_Film> _person_FilmRep;
+        private readonly IRep<CustomCategory> _customCategoryRep;
+        private readonly IRep<Notes> _noteRep;
+        private readonly IRep<CustomCategory_Note> _customCategory_NoteRep;
 
         public MainWindow(User user)
         {
@@ -52,6 +55,9 @@ namespace HarryManual
             _personRep = new PersonRep(new DataBaseContext());
             _filmRep = new FilmRep(new DataBaseContext());
             _person_FilmRep = new Person_FilmRep(new DataBaseContext());
+            _customCategoryRep = new CustomCategoryRep(new DataBaseContext());
+            _noteRep = new NoteRep(new DataBaseContext());
+            _customCategory_NoteRep = new CustomCategory_NoteRep(new DataBaseContext());
 
         }
 
@@ -265,6 +271,49 @@ namespace HarryManual
             }
         }
 
+        private void AddView(object sender, RoutedEventArgs e, Notes note, CustomCategory category)
+        {
+            GroupBox groupBox = new GroupBox();
+            groupBox.Header = category.CategoryName;
+            groupBox.Width = 454;
+
+            StackPanel stackPanel = new StackPanel();
+
+            TextBox nameTextBox = new TextBox();
+            nameTextBox.Background = Brushes.Transparent;
+            nameTextBox.Text = note.NoteTitle;
+            nameTextBox.FontWeight = FontWeights.Bold;
+
+            nameTextBox.BorderThickness = new Thickness(0);
+
+
+            TextBox descriptionTextBox = new TextBox();
+            descriptionTextBox.Background = Brushes.Transparent;
+            descriptionTextBox.Text = note.NoteContent;
+            descriptionTextBox.Margin = new Thickness(0, 10, 0, 0);
+            descriptionTextBox.BorderThickness = new Thickness(0);
+
+            stackPanel.Children.Add(nameTextBox);
+            stackPanel.Children.Add(descriptionTextBox);
+
+            groupBox.Content = stackPanel;
+
+            groupBox.MouseDoubleClick += (_sender, _e) => ClickEvent();
+
+            ListViewItem listViewItem = new ListViewItem();
+            listViewItem.Content = groupBox;
+
+            ResultStack.Items.Add(listViewItem);
+
+            void ClickEvent()
+            {
+                ItemWindow itemWindow = new ItemWindow(note, category);
+
+                itemWindow.Show();
+            }
+        }
+
+
         private void GetFilterValues(object sender, RoutedEventArgs e)
         {
             InitData();
@@ -282,6 +331,12 @@ namespace HarryManual
             List<Person_Film> person_films = _person_FilmRep.GetItems();
 
             List<Person_Quote> person_quotes = _person_QuoteRep.GetItems();
+
+            List<Notes> notes = _noteRep.GetItems();
+
+            List<CustomCategory> customCategories = _customCategoryRep.GetItems();
+
+            List<CustomCategory_Note> customCategory_Notes = _customCategory_NoteRep.GetItems();
 
 
             foreach (Person person in persons)
@@ -320,6 +375,17 @@ namespace HarryManual
 
                 AddView(sender, e, film, appropriatePersons);
             }
+
+            foreach (Notes note in notes)
+            {
+                CustomCategory_Note appropriateCustomCategory_Note = customCategory_Notes.FirstOrDefault(a => a.NoteId == note.NoteId);
+
+                CustomCategory category = customCategories.FirstOrDefault(a => a.CategoryId == appropriateCustomCategory_Note.CustomCategoryId);
+
+                AddView(sender, e, note, category);
+            }
+
+
         }
 
         private void AddCategory_Click_1(object sender, RoutedEventArgs e)
