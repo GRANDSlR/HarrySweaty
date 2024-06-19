@@ -1,5 +1,6 @@
 ﻿using HarryManual.DataAccess.HarryCarrier;
 using System.Collections.Generic;
+using System.Reflection.Emit;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -61,8 +62,50 @@ namespace HarryManual
 
             groupBox.Content = stackPanel;
 
+
+            GroupBox filmGroupBox = new GroupBox();
+            filmGroupBox.Header = "Учaстие в фильмах";
+            filmGroupBox.Width = 454;
+
+            StackPanel filmStackPanel = new StackPanel();
+
+            foreach(Film film in films)
+            {
+                TextBox textBox = new TextBox();
+                textBox.Background = Brushes.Transparent;
+                textBox.Text = film.Title + " - " + film.Part;
+                textBox.BorderThickness = new Thickness(0);
+
+                filmStackPanel.Children.Add(textBox);
+            }
+            
+            filmGroupBox.Content = filmStackPanel;
+
+            GroupBox quoteGroupBox = new GroupBox();
+            quoteGroupBox.Header = "Цитаты";
+            quoteGroupBox.Width = 454;
+
+            StackPanel quoteStackPanel = new StackPanel();
+
+            foreach (Quote quote in quotes)
+            {
+                TextBox textBox = new TextBox();
+                textBox.Background = Brushes.Transparent;
+                textBox.Text = "<<" + quote.Content + ">>";
+                textBox.FontStyle = FontStyles.Italic;
+                textBox.BorderThickness = new Thickness(0);
+
+                quoteStackPanel.Children.Add(textBox);
+            }
+
+            quoteGroupBox.Content = quoteStackPanel;
+
+
             ListViewItem listViewItem = new ListViewItem();
-            listViewItem.Content = groupBox;
+            listViewItem.Content = new StackPanel();
+            ((StackPanel)listViewItem.Content).Children.Add(groupBox);
+            ((StackPanel)listViewItem.Content).Children.Add(filmGroupBox);
+            ((StackPanel)listViewItem.Content).Children.Add(quoteGroupBox);
 
             ContentView.Items.Add(listViewItem);
         }

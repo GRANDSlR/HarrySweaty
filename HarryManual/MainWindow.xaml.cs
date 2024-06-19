@@ -2,6 +2,7 @@
 using HarryManual.DataAccess.HarryCarrier;
 using HarryManual.DataAccess.Reps;
 using HarryManual.Dependencies;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
@@ -237,12 +238,15 @@ namespace HarryManual
 
 
                 AddView(sender, e, person, appropriateFilms, appropriateQuotes);
+            }
 
+            foreach(Quote quote in quotes)
+            {
+                Person_Quote appropriatePerson_Quote = person_quotes.FirstOrDefault(a => a.QuoteId == quote.QuoteId);
 
-                Quote appropriateQuote = quotes.FirstOrDefault(a => person_quotes.Where(b => b.PersonId == person.PersonId).ToList().Count > 0);
+                Person appropriatePerson = persons.FirstOrDefault(a => a.PersonId == appropriatePerson_Quote.PersonId);
 
-                AddView(sender, e, person, appropriateQuote);
-
+                AddView(sender, e, appropriatePerson, quote);
             }
 
             foreach(Article article in articles)

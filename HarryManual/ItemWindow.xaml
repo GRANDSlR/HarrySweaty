@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:HarryManual"
         mc:Ignorable="d"
-        Title="ItemWindow" Height="450" Width="800">
+        Title="ItemWindow" Height="300" Width="500">
     <Grid>
         <ListView x:Name="ContentView">
             
