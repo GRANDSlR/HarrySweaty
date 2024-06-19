@@ -1,5 +1,7 @@
 ﻿using HarryManual.DataAccess;
 using HarryManual.DataAccess.HarryCarrier;
+using HarryManual.DataAccess.Reps;
+using HarryManual.Dependencies;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
@@ -23,6 +25,13 @@ namespace HarryManual
         private List<CheckBox> _checkedFilmsFilter = new List<CheckBox>();
         private RadioButton _radioFavState;
 
+        private readonly IRep<Article> _articleRep;
+        private readonly IRep<Quote> _quoteRep;
+        private readonly IRep<Person_Quote> _person_QuoteRep;
+        private readonly IRepExtend<Person> _personRep;
+        private readonly IRep<Film> _filmRep;
+        private readonly IRep<Person_Film> _person_FilmRep;
+
         public MainWindow(User user)
         {
             InitializeComponent();
@@ -34,6 +43,13 @@ namespace HarryManual
             {
                 AddCategory.Visibility = Visibility.Collapsed;
             }
+
+            _articleRep = new ArticleRep(new DataBaseContext());
+            _quoteRep = new QuoteRep(new DataBaseContext());
+            _person_QuoteRep = new Person_QuoteRep(new DataBaseContext());
+            _personRep = new PersonRep(new DataBaseContext());
+            _filmRep = new FilmRep(new DataBaseContext());
+            _person_FilmRep = new Person_FilmRep(new DataBaseContext());
 
         }
 
@@ -64,7 +80,7 @@ namespace HarryManual
 
         }
 
-        private void AddPersonView(object sender, RoutedEventArgs e, Person person, List<Film> films, List<Quote> quotes)
+        private void AddView(object sender, RoutedEventArgs e, Person person, List<Film> films, List<Quote> quotes)
         {
             GroupBox groupBox = new GroupBox();
             groupBox.Header = "Персонажи";
@@ -108,7 +124,7 @@ namespace HarryManual
             }
         }
 
-        private void AddQuoteView(object sender, RoutedEventArgs e, Person person, Quote quote)
+        private void AddView(object sender, RoutedEventArgs e, Person person, Quote quote)
         {
             GroupBox groupBox = new GroupBox();
             groupBox.Header = "Цитаты";
@@ -147,7 +163,7 @@ namespace HarryManual
             }
         }
 
-        private void AddArticleView(object sender, RoutedEventArgs e, Article article)
+        private void AddView(object sender, RoutedEventArgs e, Article article)
         {
             GroupBox groupBox = new GroupBox();
             groupBox.Header = "Статьи";
@@ -190,12 +206,47 @@ namespace HarryManual
         }
 
 
-
-
         private void GetFilterValues(object sender, RoutedEventArgs e)
         {
             InitData();
 
+            ResultStack.Items.Clear();
+
+            List<Person> persons = _personRep.GetItems();
+
+            List<Quote> quotes = _quoteRep.GetItems();
+
+            List<Article> articles = _articleRep.GetItems();
+
+            List<Film> films = _filmRep.GetItems();
+
+            List<Person_Film> person_films = _person_FilmRep.GetItems();
+
+            List<Person_Quote> person_quotes = _person_QuoteRep.GetItems();
+
+
+            foreach (Person person in persons)
+            {
+                List<Person_Film> person_Films = person_films.Where(a => a.PersonId == person.PersonId).ToList();
+
+                List<Film> appropriateFilms = films.Where(a => person_Films.Where(b=> b.FilmId == a.FilmId).ToList().Count>0).ToList();
+
+                List<Person_Quote> person_Quotes = person_quotes.Where(a => a.PersonId == person.PersonId).ToList();
+
+                List<Quote> appropriateQuotes = quotes.Where(a => person_Quotes.Where(b => b.QuoteId == a.QuoteId).ToList().Count > 0).ToList();
+
+
+                AddView(sender, e, person, appropriateFilms, appropriateQuotes);
+
+
+                Quote appropriateQuote = quotes.FirstOrDefault(a => person_quotes.Where(b => b.PersonId == person.PersonId).ToList().Count > 0);
+
+                AddView(sender, e, person, appropriateQuote);
+
+            }
+
+            foreach(Article article in articles)
+                AddView(sender, e, article);
         }
 
         private void AddCategory_Click_1(object sender, RoutedEventArgs e)
