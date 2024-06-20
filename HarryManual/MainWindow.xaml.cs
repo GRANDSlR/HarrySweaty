@@ -577,94 +577,6 @@ namespace HarryManual
         }
 
 
-        private void ViewResult(object sender, RoutedEventArgs e)
-        {
-            List<Person> persons = _personRep.GetItems();
-
-            if (_searchString.Length != 0 && _searchString != "")
-                persons = persons.Where(a => a.Name.Contains(_searchString)).ToList();
-
-            if (_checkedPersonsFilter.Count != 0 && _checkedPersonsFilter != null)
-                persons = persons.Where(person => _checkedPersonsFilter.Contains(person.Name)).ToList();
-
-            List<Quote> quotes = _quoteRep.GetItems();
-
-            if (_quote.Length != 0 && _quote != "")
-                quotes = quotes.Where(a => a.Content.Contains(_quote)).ToList();
-
-
-            List<Article> articles = _articleRep.GetItems();
-
-            List<Film> films = _filmRep.GetItems();
-
-            if (_searchString.Length != 0 && _searchString != "")
-                films = films.Where(a => a.Title.Contains(_searchString)).ToList();
-
-            if (_checkedFilmsFilter.Count != 0 && _checkedFilmsFilter != null)
-                films = films.Where(film => _checkedFilmsFilter.Contains(film.Title)).ToList();
-
-
-            List<Person_Film> person_films = _person_FilmRep.GetItems();
-
-            List<Person_Quote> person_quotes = _person_QuoteRep.GetItems();
-
-            List<Notes> notes = _noteRep.GetItems();
-
-            List<CustomCategory> customCategories = _customCategoryRep.GetItems();
-
-            List<CustomCategory_Note> customCategory_Notes = _customCategory_NoteRep.GetItems();
-
-            
-
-            foreach (Person person in persons)
-            {
-                List<Person_Film> person_Films = person_films.Where(a => a.PersonId == person.PersonId).ToList();
-
-                List<Film> appropriateFilms = films.Where(a => person_Films.Where(b => b.FilmId == a.FilmId).ToList().Count > 0).ToList();
-
-                List<Person_Quote> person_Quotes = person_quotes.Where(a => a.PersonId == person.PersonId).ToList();
-
-                List<Quote> appropriateQuotes = quotes.Where(a => person_Quotes.Where(b => b.QuoteId == a.QuoteId).ToList().Count > 0).ToList();
-
-
-                if(person != null && appropriateFilms!=null && appropriateQuotes!=null)
-                    AddView(sender, e, person, appropriateFilms, appropriateQuotes);
-            }
-
-            foreach (Quote quote in quotes)
-            {
-                Person_Quote appropriatePerson_Quote = person_quotes.FirstOrDefault(a => a.QuoteId == quote.QuoteId);
-
-                Person appropriatePerson = persons.FirstOrDefault(a => a.PersonId == appropriatePerson_Quote.PersonId);
-
-                if(appropriatePerson != null && quote!=null)
-                    AddView(sender, e, appropriatePerson, quote);
-            }
-
-
-            foreach (Article article in articles)
-                AddView(sender, e, article);
-
-            foreach (Film film in films)
-            {
-                Person_Film appropriatePerson_Film = person_films.FirstOrDefault(a => a.FilmId == film.FilmId);
-
-                List<Person> appropriatePersons = persons.Where(a => a.PersonId == appropriatePerson_Film.PersonId).ToList();
-
-                if (appropriatePersons != null && film != null)
-                    AddView(sender, e, film, appropriatePersons);
-            }
-
-            foreach (Notes note in notes)
-            {
-                CustomCategory_Note appropriateCustomCategory_Note = customCategory_Notes.FirstOrDefault(a => a.NoteId == note.NoteId);
-
-                CustomCategory category = customCategories.FirstOrDefault(a => a.CategoryId == appropriateCustomCategory_Note.CustomCategoryId);
-
-                AddView(sender, e, note, category);
-            }
-        }
-
         private void ViewAllResults(object sender, RoutedEventArgs e)
         {
             List<Person> persons = _personRep.GetItems();
@@ -703,62 +615,22 @@ namespace HarryManual
             List<CustomCategory_Note> customCategory_Notes = _customCategory_NoteRep.GetItems();
 
 
-/*            if (_radioFavState == "Только избранное")
-            {
-
-                List<Favorite> favList = _favoriteRep.GetItems();
-
-                persons = persons.Where(a => favList.Any(b => b.NoteId == a.PersonId && b.Classification == "person")).ToList();
-
-                quotes = quotes.Where(a => favList.Any(b => b.NoteId == a.QuoteId && b.Classification == "quote")).ToList();
-
-                articles = articles.Where(a => favList.Any(b => b.NoteId == a.ArticleId && b.Classification == "article")).ToList();
-
-                films = films.Where(a => favList.Any(b => b.NoteId == a.FilmId && b.Classification == "film")).ToList();
-
-                notes = notes.Where(a => favList.Any(b => b.NoteId == a.NoteId && b.Classification == "note")).ToList();
-            }
-
-            if (_radioFavState == "Скрыть избранное")
-            {
-
-                List<Favorite> favList = _favoriteRep.GetItems();
-
-                var newpersons = persons.Where(a => favList.Any(b => b.NoteId == a.PersonId && b.Classification == "person")).ToList();
-
-                var newquotes = quotes.Where(a => favList.Any(b => b.NoteId == a.QuoteId && b.Classification == "quote")).ToList();
-
-                string srt = "";
-
-                foreach (Quote item in newquotes)
-                    srt += item.Content;
-
-                MessageBox.Show(srt);
-
-                var newarticles = articles.Where(a => favList.Any(b => b.NoteId == a.ArticleId && b.Classification == "article")).ToList();
-
-                var newfilms = films.Where(a => favList.Any(b => b.NoteId == a.FilmId && b.Classification == "film")).ToList();
-
-                var newnotes = notes.Where(a => favList.Any(b => b.NoteId == a.NoteId && b.Classification == "note")).ToList();
-
-                persons = persons.Except(newpersons).ToList();
-
-                quotes = quotes.Except(newquotes).ToList();
-
-                articles = articles.Except(newarticles).ToList();
-
-                films = films.Except(newfilms).ToList();
-
-                notes = notes.Except(newnotes).ToList();
-
-            }*/
-
-
             ProcessPersons(sender, e, films, quotes, persons, person_films, person_quotes);
             ProcessQuotes(sender, e, persons, quotes, person_quotes);
             ProcessArticles(sender, e, articles);
             ProcessFilms(sender, e, films, person_films, persons);
-            ProcessNotes(sender, e, notes, customCategory_Notes, customCategories);
+
+            foreach (CustomCategory category in customCategories)
+            {
+                Button button = new Button() { Content = category.CategoryName, Height = 26, Width = 116 };
+
+                List<CustomCategory_Note> appropriateCategoryNotes = customCategory_Notes
+                    .Where(a => a.CustomCategoryId == category.CategoryId).ToList();
+
+                List<Notes> appropriateNotes = notes.Where(a => appropriateCategoryNotes.Any(b => b.NoteId == a.NoteId)).ToList();
+
+            ProcessNotes(sender, e, appropriateNotes, category);
+            }
         }
 
 
@@ -858,7 +730,7 @@ namespace HarryManual
             }
         }
 
-        private void ProcessNotes(object sender, RoutedEventArgs e, List<Notes> notes, List<CustomCategory_Note> customCategory_Notes, List<CustomCategory> customCategories)
+        private void ProcessNotes(object sender, RoutedEventArgs e, List<Notes> notes, CustomCategory customCategory)
         {
             foreach (Notes note in notes)
             {
@@ -874,10 +746,7 @@ namespace HarryManual
                         continue;
                 }
 
-                CustomCategory_Note appropriateCustomCategory_Note = customCategory_Notes.FirstOrDefault(a => a.NoteId == note.NoteId);
-                CustomCategory category = customCategories.FirstOrDefault(a => a.CategoryId == appropriateCustomCategory_Note.CustomCategoryId);
-
-                AddView(sender, e, note, category);
+                AddView(sender, e, note, customCategory);
             }
         }
 
@@ -907,6 +776,8 @@ namespace HarryManual
             AddFilmCheckBoxes();
 
             ViewAllResults(sender, e);
+
+            LoadCategoryFilter();
 
         }
 
@@ -940,7 +811,7 @@ namespace HarryManual
 
         }
 
-        public void AddFilmCheckBoxes()
+        private void AddFilmCheckBoxes()
         {
             List<Film> films = _filmRep.GetItems();
 
@@ -968,6 +839,76 @@ namespace HarryManual
             }
         }
 
-}
-}
+        private void LoadCategoryFilter()
+        {
+            List<Person> persons = _personRep.GetItems();
 
+            if (_searchString.Length != 0 && _searchString != "")
+                persons = persons.Where(a => a.Name.Contains(_searchString)).ToList();
+
+            if (_checkedPersonsFilter.Count != 0 && _checkedPersonsFilter != null)
+                persons = persons.Where(person => _checkedPersonsFilter.Contains(person.Name)).ToList();
+
+            List<Quote> quotes = _quoteRep.GetItems();
+
+            if (_quote.Length != 0 && _quote != "")
+                quotes = quotes.Where(a => a.Content.Contains(_quote)).ToList();
+
+
+            List<Article> articles = _articleRep.GetItems();
+
+            List<Film> films = _filmRep.GetItems();
+
+            if (_searchString.Length != 0 && _searchString != "")
+                films = films.Where(a => a.Title.Contains(_searchString)).ToList();
+
+            if (_checkedFilmsFilter.Count != 0 && _checkedFilmsFilter != null)
+                films = films.Where(film => _checkedFilmsFilter.Contains(film.Title)).ToList();
+
+
+            List<Person_Film> person_films = _person_FilmRep.GetItems();
+
+            List<Person_Quote> person_quotes = _person_QuoteRep.GetItems();
+
+            List<Notes> notes = _noteRep.GetItems();
+
+            List<CustomCategory> customCategories = _customCategoryRep.GetItems();
+
+            List<CustomCategory_Note> customCategory_Notes = _customCategory_NoteRep.GetItems();
+
+            Button personsButton = new Button() { Content = "Персонажи", Height = 26, Width = 116 };
+            Button quotesButton = new Button() { Content = "Цитаты", Height = 26, Width = 116 };
+            Button articlesButton = new Button() { Content = "Статьи", Height = 26, Width = 116 };
+            Button filmsButton = new Button() { Content = "Фильмы", Height = 26, Width = 116 };
+            Button allButton = new Button() { Content = "Все", Height = 26, Width = 116 };
+
+            personsButton.Click += (sender, e) => {ResultStack.Items.Clear(); ProcessPersons(sender, e, films, quotes, persons, person_films, person_quotes); };
+            quotesButton.Click += (sender, e) => {ResultStack.Items.Clear(); ProcessQuotes(sender, e, persons, quotes, person_quotes); };
+            articlesButton.Click += (sender, e) => {ResultStack.Items.Clear(); ProcessArticles(sender, e, articles); };
+            filmsButton.Click += (sender, e) =>  {ResultStack.Items.Clear(); ProcessFilms(sender, e, films, person_films, persons); };
+            allButton.Click += (sender, e) => { ResultStack.Items.Clear(); ViewAllResults(sender, e); } ;
+
+            CategoryFilter.Items.Add(new ListViewItem() { Content = personsButton });
+            CategoryFilter.Items.Add(new ListViewItem() { Content = quotesButton });
+            CategoryFilter.Items.Add(new ListViewItem() { Content = articlesButton });
+            CategoryFilter.Items.Add(new ListViewItem() { Content = filmsButton });
+
+            foreach (CustomCategory category in customCategories)
+            {
+                Button button = new Button() { Content = category.CategoryName, Height = 26, Width = 116 };
+
+                List<CustomCategory_Note> appropriateCategoryNotes = customCategory_Notes
+                    .Where(a => a.CustomCategoryId == category.CategoryId).ToList();
+
+                List<Notes> appropriateNotes = notes.Where(a => appropriateCategoryNotes.Any(b => b.NoteId == a.NoteId)).ToList();
+
+                button.Click += (sender, e) => { ResultStack.Items.Clear(); ProcessNotes(sender, e, appropriateNotes, category); };
+            
+                CategoryFilter.Items.Add(new ListViewItem() { Content = button });
+            }
+
+            CategoryFilter.Items.Add(new ListViewItem() { Content = allButton });
+
+        }
+    }
+}

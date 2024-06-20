@@ -17,12 +17,13 @@
                         <ColumnDefinition Width="97*"></ColumnDefinition>
                     </Grid.ColumnDefinitions>
                     <Menu Margin="0,4,0,-4">
-                        <Button Content="Персонажи" Height="26" Width="116"/>
-                        <Button Content="Статьи" Height="26" Width="116"/>
-                        <Button Content="Фильмы" Height="26" Width="116"/>
-                        <Button Content="Цитаты" Height="26" Width="116"/>
-                        <Button Content="Все" Height="26" Width="116"/>
-                        <Button x:Name="AddCategory" Content="Добавить +" Height="26" Width="116" Click="AddCategory_Click_1"/>
+                        <StackPanel>
+                            <ListView x:Name="CategoryFilter">
+
+                            </ListView>
+                            <Button x:Name="AddCategory" Content="Добавить +" Height="26" Width="116" Click="AddCategory_Click_1"/>
+
+                        </StackPanel>
                     </Menu>
                     <Grid Background="#FFF0F0F0" Grid.Column="2" Height="auto" Width="auto">
                         <Grid.RowDefinitions>
@@ -105,6 +106,14 @@ while (stackPanel.Children.Count > 0)
 }
 -->
     
+    
+<!-- 
+    <Button Content="Персонажи" Height="26" Width="116"/>
+    <Button Content="Статьи" Height="26" Width="116"/>
+    <Button Content="Фильмы" Height="26" Width="116"/>
+    <Button Content="Цитаты" Height="26" Width="116"/>
+    <Button Content="Все" Height="26" Width="116"/>
+    -->
     
 
 
