@@ -23,7 +23,7 @@ namespace HarryManual
         private string _quote = "";
         private List<string> _checkedPersonsFilter = new List<string>();
         private List<string> _checkedFilmsFilter = new List<string>();
-        private RadioButton _radioFavState;
+        private string _radioFavState;
 
         private readonly IRep<Article> _articleRep;
         private readonly IRep<Quote> _quoteRep;
@@ -120,15 +120,15 @@ namespace HarryManual
 
             if (RadioFavAll.IsChecked == true)
             {
-                _radioFavState = RadioFavAll;
+                _radioFavState = RadioFavAll.Content.ToString();
             }
             else if (RadioFavShow.IsChecked == true)
             {
-                _radioFavState = RadioFavShow;
+                _radioFavState = RadioFavShow.Content.ToString();
             }
             else if (RadioFavHide.IsChecked == true)
             {
-                _radioFavState = RadioFavHide;
+                _radioFavState = RadioFavHide.Content.ToString();
             }
 
         }
@@ -190,7 +190,6 @@ namespace HarryManual
                 if (favToDelete != null)
                 {
                     int favDataId = _favoriteRep.DeleteItem(favToDelete.FavoriteId);
-                    MessageBox.Show("Объект успешно удален!");
                 }
                 else
                     MessageBox.Show("Ошибка. Элемент для удаления не найден!");
@@ -274,7 +273,6 @@ namespace HarryManual
                 if (favToDelete != null)
                 {
                     int favDataId = _favoriteRep.DeleteItem(favToDelete.FavoriteId);
-                    MessageBox.Show("Объект успешно удален!");
                 }
                 else
                     MessageBox.Show("Ошибка. Элемент для удаления не найден!");
@@ -360,7 +358,6 @@ namespace HarryManual
                 if (favToDelete != null)
                 {
                     int favDataId = _favoriteRep.DeleteItem(favToDelete.FavoriteId);
-                    MessageBox.Show("Объект успешно удален!");
                 }
                 else
                     MessageBox.Show("Ошибка. Элемент для удаления не найден!");
@@ -461,7 +458,6 @@ namespace HarryManual
                 if (favToDelete != null)
                 {
                     int favDataId = _favoriteRep.DeleteItem(favToDelete.FavoriteId);
-                    MessageBox.Show("Объект успешно удален!");
                 }
                 else
                     MessageBox.Show("Ошибка. Элемент для удаления не найден!");
@@ -550,7 +546,6 @@ namespace HarryManual
                 if (favToDelete != null)
                 {
                     int favDataId = _favoriteRep.DeleteItem(favToDelete.FavoriteId);
-                    MessageBox.Show("Объект успешно удален!");
                 }
                 else
                     MessageBox.Show("Ошибка. Элемент для удаления не найден!");
@@ -619,6 +614,7 @@ namespace HarryManual
 
             List<CustomCategory_Note> customCategory_Notes = _customCategory_NoteRep.GetItems();
 
+            
 
             foreach (Person person in persons)
             {
@@ -706,6 +702,58 @@ namespace HarryManual
 
             List<CustomCategory_Note> customCategory_Notes = _customCategory_NoteRep.GetItems();
 
+
+/*            if (_radioFavState == "Только избранное")
+            {
+
+                List<Favorite> favList = _favoriteRep.GetItems();
+
+                persons = persons.Where(a => favList.Any(b => b.NoteId == a.PersonId && b.Classification == "person")).ToList();
+
+                quotes = quotes.Where(a => favList.Any(b => b.NoteId == a.QuoteId && b.Classification == "quote")).ToList();
+
+                articles = articles.Where(a => favList.Any(b => b.NoteId == a.ArticleId && b.Classification == "article")).ToList();
+
+                films = films.Where(a => favList.Any(b => b.NoteId == a.FilmId && b.Classification == "film")).ToList();
+
+                notes = notes.Where(a => favList.Any(b => b.NoteId == a.NoteId && b.Classification == "note")).ToList();
+            }
+
+            if (_radioFavState == "Скрыть избранное")
+            {
+
+                List<Favorite> favList = _favoriteRep.GetItems();
+
+                var newpersons = persons.Where(a => favList.Any(b => b.NoteId == a.PersonId && b.Classification == "person")).ToList();
+
+                var newquotes = quotes.Where(a => favList.Any(b => b.NoteId == a.QuoteId && b.Classification == "quote")).ToList();
+
+                string srt = "";
+
+                foreach (Quote item in newquotes)
+                    srt += item.Content;
+
+                MessageBox.Show(srt);
+
+                var newarticles = articles.Where(a => favList.Any(b => b.NoteId == a.ArticleId && b.Classification == "article")).ToList();
+
+                var newfilms = films.Where(a => favList.Any(b => b.NoteId == a.FilmId && b.Classification == "film")).ToList();
+
+                var newnotes = notes.Where(a => favList.Any(b => b.NoteId == a.NoteId && b.Classification == "note")).ToList();
+
+                persons = persons.Except(newpersons).ToList();
+
+                quotes = quotes.Except(newquotes).ToList();
+
+                articles = articles.Except(newarticles).ToList();
+
+                films = films.Except(newfilms).ToList();
+
+                notes = notes.Except(newnotes).ToList();
+
+            }*/
+
+
             ProcessPersons(sender, e, films, quotes, persons, person_films, person_quotes);
             ProcessQuotes(sender, e, persons, quotes, person_quotes);
             ProcessArticles(sender, e, articles);
@@ -718,6 +766,19 @@ namespace HarryManual
         {
             foreach (Person person in persons)
             {
+                bool isExist = _favoriteRep.GetItems().FirstOrDefault(a => a.NoteId == person.PersonId && a.Classification == "person") != null;
+                
+                if (_radioFavState == "Только избранное")
+                {
+                    if (!isExist)
+                        continue;
+                }
+                if (_radioFavState == "Скрыть избранное")
+                {
+                    if (isExist)
+                        continue;
+                }
+
                 List<Person_Film> person_Films = person_films.Where(a => a.PersonId == person.PersonId).ToList();
                 List<Film> appropriateFilms = films.Where(a => person_Films.Where(b => b.FilmId == a.FilmId).ToList().Count > 0).ToList();
                 List<Person_Quote> person_Quotes = person_quotes.Where(a => a.PersonId == person.PersonId).ToList();
@@ -732,6 +793,19 @@ namespace HarryManual
         {
             foreach (Quote quote in quotes)
             {
+                bool isExist = _favoriteRep.GetItems().FirstOrDefault(a => a.NoteId == quote.QuoteId && a.Classification == "quote") != null;
+
+                if (_radioFavState == "Только избранное")
+                {
+                    if (!isExist)
+                        continue;
+                }
+                if (_radioFavState == "Скрыть избранное")
+                {
+                    if (isExist)
+                        continue;
+                }
+
                 Person_Quote appropriatePerson_Quote = person_quotes.FirstOrDefault(a => a.QuoteId == quote.QuoteId);
                 Person appropriatePerson = persons.FirstOrDefault(a => a.PersonId == appropriatePerson_Quote.PersonId);
 
@@ -743,13 +817,39 @@ namespace HarryManual
         private void ProcessArticles(object sender, RoutedEventArgs e, List<Article> articles)
         {
             foreach (Article article in articles)
+            {
+                bool isExist = _favoriteRep.GetItems().FirstOrDefault(a => a.NoteId == article.ArticleId && a.Classification == "article") != null;
+                if (_radioFavState == "Только избранное")
+                {
+                    if (!isExist)
+                        continue;
+                }
+                if (_radioFavState == "Скрыть избранное")
+                {
+                    if (isExist)
+                        continue;
+                }
+
                 AddView(sender, e, article);
+            }
         }
 
         private void ProcessFilms(object sender, RoutedEventArgs e, List<Film> films, List<Person_Film> person_films, List<Person> persons)
         {
             foreach (Film film in films)
             {
+                bool isExist = _favoriteRep.GetItems().FirstOrDefault(a => a.NoteId == film.FilmId && a.Classification == "film") != null;
+                if (_radioFavState == "Только избранное")
+                {
+                    if (!isExist)
+                        continue;
+                }
+                if (_radioFavState == "Скрыть избранное")
+                {
+                    if (isExist)
+                        continue;
+                }
+
                 Person_Film appropriatePerson_Film = person_films.FirstOrDefault(a => a.FilmId == film.FilmId);
                 List<Person> appropriatePersons = persons.Where(a => a.PersonId == appropriatePerson_Film.PersonId).ToList();
 
@@ -762,6 +862,18 @@ namespace HarryManual
         {
             foreach (Notes note in notes)
             {
+                bool isExist = _favoriteRep.GetItems().FirstOrDefault(a => a.NoteId == note.NoteId && a.Classification == "note") != null;
+                if (_radioFavState == "Только избранное")
+                {
+                    if (!isExist)
+                        continue;
+                }
+                if (_radioFavState == "Скрыть избранное")
+                {
+                    if (isExist)
+                        continue;
+                }
+
                 CustomCategory_Note appropriateCustomCategory_Note = customCategory_Notes.FirstOrDefault(a => a.NoteId == note.NoteId);
                 CustomCategory category = customCategories.FirstOrDefault(a => a.CategoryId == appropriateCustomCategory_Note.CustomCategoryId);
 
