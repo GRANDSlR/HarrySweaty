@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:HarryManual"
         mc:Ignorable="d"
-        Title="MainWindow" Height="540" Width="820">
+        Title="MainWindow" Height="540" Width="820" Loaded="Window_Loaded">
     <Grid>
 
         <TabControl Grid.Row="1">
@@ -33,21 +33,19 @@
                             <RowDefinition Height="88"></RowDefinition>
                             <RowDefinition/>
                         </Grid.RowDefinitions>
+                        
                         <TextBox x:Name="MainSearchString"  HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Center" Width="180" BorderThickness="0,0,0,0" Height="18" Grid.ColumnSpan="2" Margin="7,0,0,0"/>
+                        
                         <GroupBox Header="Персонажи" Grid.Row="1" Grid.ColumnSpan="2">
-                            <StackPanel  x:Name="Persons">
-                                <CheckBox Content="CheckBox1" HorizontalAlignment="Left" Margin="9,7,0,0" Grid.Row="1" VerticalAlignment="Top" Height="16" Width="71"/>
-                                <CheckBox Content="CheckBox2" HorizontalAlignment="Left" Margin="9,9,0,0" Grid.Row="2" VerticalAlignment="Top" Height="14" Width="71"/>
-                                <CheckBox Content="CheckBox3" HorizontalAlignment="Left" Margin="9,9,0,0" Grid.Row="2" VerticalAlignment="Top" Height="14" Width="71"/>
-                            </StackPanel>
+                            <ListView x:Name="PersonCheck" Background="Transparent">
+                                
+                            </ListView>
                         </GroupBox>
 
-                        <GroupBox Header="Серии фильмов" Grid.Row="2" Grid.ColumnSpan="2">
-                            <StackPanel  x:Name="Films">
-                                <CheckBox Content="CheckBox" HorizontalAlignment="Left" Margin="9,7,0,0" Grid.Row="1" VerticalAlignment="Top" Height="16" Width="71"/>
-                                <CheckBox Content="CheckBox" HorizontalAlignment="Left" Margin="9,9,0,0" Grid.Row="2" VerticalAlignment="Top" Height="14" Width="71"/>
-                                <CheckBox Content="CheckBox" HorizontalAlignment="Left" Margin="9,9,0,0" Grid.Row="2" VerticalAlignment="Top" Height="14" Width="71"/>
-                            </StackPanel>
+                        <GroupBox Header="Фильмы" Grid.Row="2" Grid.ColumnSpan="2">
+                            <ListView x:Name="FilmCheck" Background="Transparent">
+                                
+                            </ListView>
                         </GroupBox>
 
 

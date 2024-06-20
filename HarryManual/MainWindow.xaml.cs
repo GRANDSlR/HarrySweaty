@@ -17,8 +17,6 @@ namespace HarryManual
     /// </summary>
     public partial class MainWindow : Window
     {
-        private DataBaseContext dbContext;
-
         private User _user;
 
         private string _searchString = "";
@@ -40,7 +38,6 @@ namespace HarryManual
         public MainWindow(User user)
         {
             InitializeComponent();
-            dbContext = new DataBaseContext();
 
             _user = user;
 
@@ -67,10 +64,10 @@ namespace HarryManual
 
             _quote = Quote.Text;
 
-            var checkBoxes = Persons.Children.OfType<CheckBox>();
+            var checkBoxes = PersonCheck.Items.OfType<CheckBox>();
             _checkedPersonsFilter = checkBoxes.Where(cb => cb.IsChecked == true).ToList();
 
-            var checkFilterBoxes = Films.Children.OfType<CheckBox>();
+            var checkFilterBoxes = FilmCheck.Items.OfType<CheckBox>();
             _checkedFilmsFilter = checkFilterBoxes.Where(cb => cb.IsChecked == true).ToList();
 
             if (RadioFavAll.IsChecked == true)
@@ -314,6 +311,25 @@ namespace HarryManual
         }
 
 
+        private void ViewPerson(object sender, RoutedEventArgs e)
+        {
+            List<Person> persons = _personRep.GetItems();
+
+            foreach (Person person in persons)
+            {
+                List<Person_Film> person_Films = _person_FilmRep.GetItems().Where(a => a.PersonId == person.PersonId).ToList();
+
+                List<Film> appropriateFilms = _filmRep.GetItems().Where(a => person_Films.Where(b => b.FilmId == a.FilmId).ToList().Count > 0).ToList();
+
+                List<Person_Quote> person_Quotes = _person_QuoteRep.GetItems().Where(a => a.PersonId == person.PersonId).ToList();
+
+                List<Quote> appropriateQuotes = _quoteRep.GetItems().Where(a => person_Quotes.Where(b => b.QuoteId == a.QuoteId).ToList().Count > 0).ToList();
+
+                AddView(sender, e, person, appropriateFilms, appropriateQuotes);
+            }
+        }
+
+
         private void GetFilterValues(object sender, RoutedEventArgs e)
         {
             InitData();
@@ -322,11 +338,29 @@ namespace HarryManual
 
             List<Person> persons = _personRep.GetItems();
 
+            if(_searchString.Length != 0 && _searchString != "")
+                persons = persons.Where(a => a.Name.Contains(_searchString)).ToList().Count > 0 ? persons.Where(a => a.Name.Contains(_searchString)).ToList() : persons;
+
+            if (_checkedPersonsFilter.Count != 0 && _checkedPersonsFilter != null)
+                persons = persons.Where(a => _checkedPersonsFilter.Where(b => b.Content.ToString() == a.Name).ToList().Count>0).ToList();
+
+
             List<Quote> quotes = _quoteRep.GetItems();
+
+            if (_quote.Length != 0 && _quote != "")
+                quotes = quotes.Where(a => a.Content.Contains(_quote)).ToList();
+
 
             List<Article> articles = _articleRep.GetItems();
 
             List<Film> films = _filmRep.GetItems();
+
+            if (_searchString.Length != 0 && _searchString != "")
+                films = films.Where(a => a.Title.Contains(_searchString)).ToList().Count > 0 ? films.Where(a => a.Title.Contains(_searchString)).ToList() : films;
+
+            if (_checkedFilmsFilter.Count != 0 && _checkedFilmsFilter != null)
+                films = films.Where(a => _checkedFilmsFilter.Where(b => b.Content.ToString().Contains(a.Title)).ToList().Count > 0).ToList();
+
 
             List<Person_Film> person_films = _person_FilmRep.GetItems();
 
@@ -343,17 +377,16 @@ namespace HarryManual
             {
                 List<Person_Film> person_Films = person_films.Where(a => a.PersonId == person.PersonId).ToList();
 
-                List<Film> appropriateFilms = films.Where(a => person_Films.Where(b=> b.FilmId == a.FilmId).ToList().Count>0).ToList();
+                List<Film> appropriateFilms = films.Where(a => person_Films.Where(b => b.FilmId == a.FilmId).ToList().Count > 0).ToList();
 
                 List<Person_Quote> person_Quotes = person_quotes.Where(a => a.PersonId == person.PersonId).ToList();
 
                 List<Quote> appropriateQuotes = quotes.Where(a => person_Quotes.Where(b => b.QuoteId == a.QuoteId).ToList().Count > 0).ToList();
 
-
                 AddView(sender, e, person, appropriateFilms, appropriateQuotes);
             }
 
-            foreach(Quote quote in quotes)
+            foreach (Quote quote in quotes)
             {
                 Person_Quote appropriatePerson_Quote = person_quotes.FirstOrDefault(a => a.QuoteId == quote.QuoteId);
 
@@ -366,8 +399,7 @@ namespace HarryManual
             foreach(Article article in articles)
                 AddView(sender, e, article);
 
-
-            foreach(Film film in films)
+            foreach (Film film in films)
             {
                 Person_Film appropriatePerson_Film = person_films.FirstOrDefault(a => a.FilmId == film.FilmId);
 
@@ -388,12 +420,79 @@ namespace HarryManual
 
         }
 
+
         private void AddCategory_Click_1(object sender, RoutedEventArgs e)
         {
             AdditionWindow additionWindow = new AdditionWindow();
 
             additionWindow.Show();
         }
-    }
+
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            AddPersonCheckBoxes();
+
+            AddFilmCheckBoxes();
+        }
+
+        private void AddPersonCheckBoxes()
+        {
+            StackPanel stackPanel = new StackPanel();
+
+            List<Person> persons = _personRep.GetItems();
+
+            foreach(Person person in persons)
+            {
+                string checkBoxContent = person.Name;
+                string checkBoxHorizontalAlignment = "Left";
+                string checkBoxVerticalAlignment = "Top";
+                string checkBoxHeight = "16";
+                string checkBoxWidth = "71";
+
+                CheckBox checkBox = new CheckBox()
+                {
+                    Content = checkBoxContent,
+                    HorizontalAlignment = (HorizontalAlignment)Enum.Parse(typeof(HorizontalAlignment), checkBoxHorizontalAlignment),
+                    VerticalAlignment = (VerticalAlignment)Enum.Parse(typeof(VerticalAlignment), checkBoxVerticalAlignment),
+                    Height = double.Parse(checkBoxHeight),
+                    Width = double.Parse(checkBoxWidth)
+                };
+
+                stackPanel.Children.Add(checkBox);
+            }
+
+            PersonCheck.Items.Add(stackPanel);
+        }
+
+        public void AddFilmCheckBoxes()
+        {
+            StackPanel stackPanel = new StackPanel();
+
+            List<Film> films = _filmRep.GetItems();
+
+            foreach (Film film in films)
+            {
+                string checkBoxContent = film.Title + " - " + film.Part;
+                string checkBoxHorizontalAlignment = "Left";
+                string checkBoxVerticalAlignment = "Top";
+                string checkBoxHeight = "16";
+                string checkBoxWidth = "71";
+
+                CheckBox checkBox = new CheckBox()
+                {
+                    Content = checkBoxContent,
+                    HorizontalAlignment = (HorizontalAlignment)Enum.Parse(typeof(HorizontalAlignment), checkBoxHorizontalAlignment),
+                    VerticalAlignment = (VerticalAlignment)Enum.Parse(typeof(VerticalAlignment), checkBoxVerticalAlignment),
+                    Height = double.Parse(checkBoxHeight),
+                    Width = double.Parse(checkBoxWidth)
+                };
+
+                stackPanel.Children.Add(checkBox);
+            }
+
+            FilmCheck.Items.Add(stackPanel);
+        }
+
+}
 }
 
