@@ -21,8 +21,8 @@ namespace HarryManual
 
         private string _searchString = "";
         private string _quote = "";
-        private List<CheckBox> _checkedPersonsFilter = new List<CheckBox>();
-        private List<CheckBox> _checkedFilmsFilter = new List<CheckBox>();
+        private List<string> _checkedPersonsFilter = new List<string>();
+        private List<string> _checkedFilmsFilter = new List<string>();
         private RadioButton _radioFavState;
 
         private readonly IRep<Article> _articleRep;
@@ -58,17 +58,63 @@ namespace HarryManual
 
         }
 
+
+        private static T FindVisualChild<T>(DependencyObject parent) where T : DependencyObject
+        {
+            if (parent == null)
+                return null;
+
+            for (int i = 0; i < VisualTreeHelper.GetChildrenCount(parent); i++)
+            {
+                var child = VisualTreeHelper.GetChild(parent, i);
+
+                if (child is T result)
+                {
+                    return result;
+                }
+
+                var descendant = FindVisualChild<T>(child);
+
+                if (descendant != null)
+                {
+                    return descendant;
+                }
+            }
+
+            return null;
+        }
+
         private void InitData()
         {
             _searchString = MainSearchString.Text;
 
             _quote = Quote.Text;
 
-            var checkBoxes = PersonCheck.Items.OfType<CheckBox>();
-            _checkedPersonsFilter = checkBoxes.Where(cb => cb.IsChecked == true).ToList();
+            _checkedPersonsFilter.Clear();
 
-            var checkFilterBoxes = FilmCheck.Items.OfType<CheckBox>();
-            _checkedFilmsFilter = checkFilterBoxes.Where(cb => cb.IsChecked == true).ToList();
+            _checkedFilmsFilter.Clear();
+
+            foreach (ListViewItem listViewItem in PersonCheck.Items)
+            {
+                CheckBox checkBox = FindVisualChild<CheckBox>(listViewItem);
+
+                if (checkBox != null && checkBox.IsChecked == true)
+                {
+                    _checkedPersonsFilter.Add(checkBox.Content.ToString());
+                }
+            }
+
+
+            foreach (ListViewItem listViewItem in FilmCheck.Items)
+            {
+                CheckBox checkBox = FindVisualChild<CheckBox>(listViewItem);
+
+                if (checkBox != null && checkBox.IsChecked == true)
+                {
+                    _checkedFilmsFilter.Add(checkBox.Content.ToString());
+                }
+            }
+
 
             if (RadioFavAll.IsChecked == true)
             {
@@ -311,6 +357,93 @@ namespace HarryManual
         }
 
 
+        private void ViewResult(object sender, RoutedEventArgs e)
+        {
+            List<Person> persons = _personRep.GetItems();
+
+            if (_searchString.Length != 0 && _searchString != "")
+                persons = persons.Where(a => a.Name.Contains(_searchString)).ToList();
+
+            if (_checkedPersonsFilter.Count != 0 && _checkedPersonsFilter != null)
+                persons = persons.Where(person => _checkedPersonsFilter.Contains(person.Name)).ToList();
+
+            List<Quote> quotes = _quoteRep.GetItems();
+
+            if (_quote.Length != 0 && _quote != "")
+                quotes = quotes.Where(a => a.Content.Contains(_quote)).ToList();
+
+
+            List<Article> articles = _articleRep.GetItems();
+
+            List<Film> films = _filmRep.GetItems();
+
+            if (_searchString.Length != 0 && _searchString != "")
+                films = films.Where(a => a.Title.Contains(_searchString)).ToList();
+
+            if (_checkedFilmsFilter.Count != 0 && _checkedFilmsFilter != null)
+                films = films.Where(film => _checkedFilmsFilter.Contains(film.Title)).ToList();
+
+
+            List<Person_Film> person_films = _person_FilmRep.GetItems();
+
+            List<Person_Quote> person_quotes = _person_QuoteRep.GetItems();
+
+            List<Notes> notes = _noteRep.GetItems();
+
+            List<CustomCategory> customCategories = _customCategoryRep.GetItems();
+
+            List<CustomCategory_Note> customCategory_Notes = _customCategory_NoteRep.GetItems();
+
+
+            foreach (Person person in persons)
+            {
+                List<Person_Film> person_Films = person_films.Where(a => a.PersonId == person.PersonId).ToList();
+
+                List<Film> appropriateFilms = films.Where(a => person_Films.Where(b => b.FilmId == a.FilmId).ToList().Count > 0).ToList();
+
+                List<Person_Quote> person_Quotes = person_quotes.Where(a => a.PersonId == person.PersonId).ToList();
+
+                List<Quote> appropriateQuotes = quotes.Where(a => person_Quotes.Where(b => b.QuoteId == a.QuoteId).ToList().Count > 0).ToList();
+
+
+                if(person != null && appropriateFilms!=null && appropriateQuotes!=null)
+                    AddView(sender, e, person, appropriateFilms, appropriateQuotes);
+            }
+
+            foreach (Quote quote in quotes)
+            {
+                Person_Quote appropriatePerson_Quote = person_quotes.FirstOrDefault(a => a.QuoteId == quote.QuoteId);
+
+                Person appropriatePerson = persons.FirstOrDefault(a => a.PersonId == appropriatePerson_Quote.PersonId);
+
+                if(appropriatePerson != null && quote!=null)
+                    AddView(sender, e, appropriatePerson, quote);
+            }
+
+
+            foreach (Article article in articles)
+                AddView(sender, e, article);
+
+            foreach (Film film in films)
+            {
+                Person_Film appropriatePerson_Film = person_films.FirstOrDefault(a => a.FilmId == film.FilmId);
+
+                List<Person> appropriatePersons = persons.Where(a => a.PersonId == appropriatePerson_Film.PersonId).ToList();
+
+                if (appropriatePersons != null && film != null)
+                    AddView(sender, e, film, appropriatePersons);
+            }
+
+            foreach (Notes note in notes)
+            {
+                CustomCategory_Note appropriateCustomCategory_Note = customCategory_Notes.FirstOrDefault(a => a.NoteId == note.NoteId);
+
+                CustomCategory category = customCategories.FirstOrDefault(a => a.CategoryId == appropriateCustomCategory_Note.CustomCategoryId);
+
+                AddView(sender, e, note, category);
+            }
+        }
+
         private void ViewPerson(object sender, RoutedEventArgs e)
         {
             List<Person> persons = _personRep.GetItems();
@@ -336,86 +469,7 @@ namespace HarryManual
 
             ResultStack.Items.Clear();
 
-            List<Person> persons = _personRep.GetItems();
-
-            if(_searchString.Length != 0 && _searchString != "")
-                persons = persons.Where(a => a.Name.Contains(_searchString)).ToList().Count > 0 ? persons.Where(a => a.Name.Contains(_searchString)).ToList() : persons;
-
-            if (_checkedPersonsFilter.Count != 0 && _checkedPersonsFilter != null)
-                persons = persons.Where(a => _checkedPersonsFilter.Where(b => b.Content.ToString() == a.Name).ToList().Count>0).ToList();
-
-
-            List<Quote> quotes = _quoteRep.GetItems();
-
-            if (_quote.Length != 0 && _quote != "")
-                quotes = quotes.Where(a => a.Content.Contains(_quote)).ToList();
-
-
-            List<Article> articles = _articleRep.GetItems();
-
-            List<Film> films = _filmRep.GetItems();
-
-            if (_searchString.Length != 0 && _searchString != "")
-                films = films.Where(a => a.Title.Contains(_searchString)).ToList().Count > 0 ? films.Where(a => a.Title.Contains(_searchString)).ToList() : films;
-
-            if (_checkedFilmsFilter.Count != 0 && _checkedFilmsFilter != null)
-                films = films.Where(a => _checkedFilmsFilter.Where(b => b.Content.ToString().Contains(a.Title)).ToList().Count > 0).ToList();
-
-
-            List<Person_Film> person_films = _person_FilmRep.GetItems();
-
-            List<Person_Quote> person_quotes = _person_QuoteRep.GetItems();
-
-            List<Notes> notes = _noteRep.GetItems();
-
-            List<CustomCategory> customCategories = _customCategoryRep.GetItems();
-
-            List<CustomCategory_Note> customCategory_Notes = _customCategory_NoteRep.GetItems();
-
-
-            foreach (Person person in persons)
-            {
-                List<Person_Film> person_Films = person_films.Where(a => a.PersonId == person.PersonId).ToList();
-
-                List<Film> appropriateFilms = films.Where(a => person_Films.Where(b => b.FilmId == a.FilmId).ToList().Count > 0).ToList();
-
-                List<Person_Quote> person_Quotes = person_quotes.Where(a => a.PersonId == person.PersonId).ToList();
-
-                List<Quote> appropriateQuotes = quotes.Where(a => person_Quotes.Where(b => b.QuoteId == a.QuoteId).ToList().Count > 0).ToList();
-
-                AddView(sender, e, person, appropriateFilms, appropriateQuotes);
-            }
-
-            foreach (Quote quote in quotes)
-            {
-                Person_Quote appropriatePerson_Quote = person_quotes.FirstOrDefault(a => a.QuoteId == quote.QuoteId);
-
-                Person appropriatePerson = persons.FirstOrDefault(a => a.PersonId == appropriatePerson_Quote.PersonId);
-
-                AddView(sender, e, appropriatePerson, quote);
-            }
-
-
-            foreach(Article article in articles)
-                AddView(sender, e, article);
-
-            foreach (Film film in films)
-            {
-                Person_Film appropriatePerson_Film = person_films.FirstOrDefault(a => a.FilmId == film.FilmId);
-
-                List<Person> appropriatePersons = persons.Where(a => a.PersonId == appropriatePerson_Film.PersonId).ToList();
-
-                AddView(sender, e, film, appropriatePersons);
-            }
-
-            foreach (Notes note in notes)
-            {
-                CustomCategory_Note appropriateCustomCategory_Note = customCategory_Notes.FirstOrDefault(a => a.NoteId == note.NoteId);
-
-                CustomCategory category = customCategories.FirstOrDefault(a => a.CategoryId == appropriateCustomCategory_Note.CustomCategoryId);
-
-                AddView(sender, e, note, category);
-            }
+            ViewResult(sender, e);
 
 
         }
@@ -433,12 +487,13 @@ namespace HarryManual
             AddPersonCheckBoxes();
 
             AddFilmCheckBoxes();
+
+            ViewResult(sender, e);
+
         }
 
         private void AddPersonCheckBoxes()
         {
-            StackPanel stackPanel = new StackPanel();
-
             List<Person> persons = _personRep.GetItems();
 
             foreach(Person person in persons)
@@ -458,16 +513,17 @@ namespace HarryManual
                     Width = double.Parse(checkBoxWidth)
                 };
 
-                stackPanel.Children.Add(checkBox);
+                ListViewItem listViewItem = new ListViewItem();
+                listViewItem.Content = checkBox;
+
+                PersonCheck.Items.Add(listViewItem);
+
             }
 
-            PersonCheck.Items.Add(stackPanel);
         }
 
         public void AddFilmCheckBoxes()
         {
-            StackPanel stackPanel = new StackPanel();
-
             List<Film> films = _filmRep.GetItems();
 
             foreach (Film film in films)
@@ -487,10 +543,11 @@ namespace HarryManual
                     Width = double.Parse(checkBoxWidth)
                 };
 
-                stackPanel.Children.Add(checkBox);
-            }
+                ListViewItem listViewItem = new ListViewItem();
+                listViewItem.Content = checkBox;
 
-            FilmCheck.Items.Add(stackPanel);
+                FilmCheck.Items.Add(listViewItem);
+            }
         }
 
 }
