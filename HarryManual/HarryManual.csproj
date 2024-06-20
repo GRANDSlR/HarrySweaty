@@ -84,6 +84,7 @@
       <DependentUpon>CategotyAdditionWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="DataAccess\DataBaseContext.cs" />
+    <Compile Include="DataAccess\HarryCarrier\Favorite.cs" />
     <Compile Include="DataAccess\HarryCarrier\Article.cs" />
     <Compile Include="DataAccess\HarryCarrier\CustomCategory.cs" />
     <Compile Include="DataAccess\HarryCarrier\CustomCategory_Note.cs" />
@@ -96,6 +97,7 @@
     <Compile Include="DataAccess\Reps\ArticleRep.cs" />
     <Compile Include="DataAccess\Reps\CustomCategoryRep.cs" />
     <Compile Include="DataAccess\Reps\CustomCategory_NoteRep.cs" />
+    <Compile Include="DataAccess\Reps\FavoriteRep.cs" />
     <Compile Include="DataAccess\Reps\FilmRep.cs" />
     <Compile Include="DataAccess\Reps\NoteRep.cs" />
     <Compile Include="DataAccess\Reps\Person_FilmRep.cs" />
@@ -121,7 +123,8 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Dependencies\IRepExtend.cs" />
+    <Compile Include="Dependencies\IRepExtendId.cs" />
+    <Compile Include="Dependencies\IRepExtendTitle.cs" />
     <Compile Include="Dependencies\IRep.cs" />
     <Compile Include="ItemWindow.xaml.cs">
       <DependentUpon>ItemWindow.xaml</DependentUpon>

@@ -28,12 +28,13 @@ namespace HarryManual
         private readonly IRep<Article> _articleRep;
         private readonly IRep<Quote> _quoteRep;
         private readonly IRep<Person_Quote> _person_QuoteRep;
-        private readonly IRepExtend<Person> _personRep;
+        private readonly IRepExtendTitle<Person> _personRep;
         private readonly IRep<Film> _filmRep;
         private readonly IRep<Person_Film> _person_FilmRep;
         private readonly IRep<CustomCategory> _customCategoryRep;
         private readonly IRep<Notes> _noteRep;
         private readonly IRep<CustomCategory_Note> _customCategory_NoteRep;
+        private readonly IRepExtendId<Favorite> _favoriteRep;
 
         public MainWindow(User user)
         {
@@ -55,6 +56,7 @@ namespace HarryManual
             _customCategoryRep = new CustomCategoryRep(new DataBaseContext());
             _noteRep = new NoteRep(new DataBaseContext());
             _customCategory_NoteRep = new CustomCategory_NoteRep(new DataBaseContext());
+            _favoriteRep = new FavoriteRep(new DataBaseContext());
 
         }
 
@@ -154,9 +156,53 @@ namespace HarryManual
             descriptionTextBox.Text = "Описание: "+person.Description;
             descriptionTextBox.BorderThickness = new Thickness(0);
 
+            CheckBox checkBox = new CheckBox()
+            {
+                Content = new TextBlock()
+                {
+                    Text = "Избранное",
+                    FontWeight = FontWeights.Bold
+
+                },
+                IsChecked = _favoriteRep.GetItems()
+                    .FirstOrDefault(a => a.NoteId == person.PersonId && a.Classification == "person") != null ? true : false
+            };
+
+            checkBox.Checked += (_sender, _e) => CheckBox_Checked();
+
+            checkBox.Unchecked += (_sender, _e) => CheckBox_Unchecked();
+
+            void CheckBox_Checked()
+            {
+                int favDataId = _favoriteRep.AddItem(new Favorite 
+                { 
+                    UserId = _user.UserId,
+                    NoteId = person.PersonId,
+                    Classification = "person"
+                });
+            }
+
+            void CheckBox_Unchecked()
+            {
+                Favorite favToDelete = _favoriteRep.GetItems()
+                    .FirstOrDefault(a => a.NoteId == person.PersonId && a.Classification == "person");
+
+                if (favToDelete != null)
+                {
+                    int favDataId = _favoriteRep.DeleteItem(favToDelete.FavoriteId);
+                    MessageBox.Show("Объект успешно удален!");
+                }
+                else
+                    MessageBox.Show("Ошибка. Элемент для удаления не найден!");
+
+            }
+
             stackPanel.Children.Add(nameTextBox);
             stackPanel.Children.Add(facultyTextBox);
             stackPanel.Children.Add(descriptionTextBox);
+
+            if(_user.Role == "admin")
+                stackPanel.Children.Add(checkBox);
 
             groupBox.Content = stackPanel;
 
@@ -166,7 +212,7 @@ namespace HarryManual
             listViewItem.Content = groupBox;
 
             ResultStack.Items.Add(listViewItem);
-
+                        
             void ClickEvent()
             {
                 ItemWindow itemWindow = new ItemWindow(person, films, quotes);
@@ -194,8 +240,52 @@ namespace HarryManual
             descriptionTextBox.Text = "Цитата: " + quote.Content;
             descriptionTextBox.BorderThickness = new Thickness(0);
 
+            CheckBox checkBox = new CheckBox()
+            {
+                Content = new TextBlock()
+                {
+                    Text = "Избранное",
+                    FontWeight = FontWeights.Bold
+
+                },
+                IsChecked = _favoriteRep.GetItems()
+                    .FirstOrDefault(a => a.NoteId == quote.QuoteId && a.Classification == "quote") != null ? true : false
+            };
+
+            checkBox.Checked += (_sender, _e) => CheckBox_Checked();
+
+            checkBox.Unchecked += (_sender, _e) => CheckBox_Unchecked();
+
+            void CheckBox_Checked()
+            {
+                int favDataId = _favoriteRep.AddItem(new Favorite
+                {
+                    UserId = _user.UserId,
+                    NoteId = quote.QuoteId,
+                    Classification = "quote"
+                });
+            }
+
+            void CheckBox_Unchecked()
+            {
+                Favorite favToDelete = _favoriteRep.GetItems()
+                    .FirstOrDefault(a => a.NoteId == quote.QuoteId && a.Classification == "quote");
+
+                if (favToDelete != null)
+                {
+                    int favDataId = _favoriteRep.DeleteItem(favToDelete.FavoriteId);
+                    MessageBox.Show("Объект успешно удален!");
+                }
+                else
+                    MessageBox.Show("Ошибка. Элемент для удаления не найден!");
+
+            }
+
             stackPanel.Children.Add(nameTextBox);
             stackPanel.Children.Add(descriptionTextBox);
+
+            if (_user.Role == "admin")
+                stackPanel.Children.Add(checkBox);
 
             groupBox.Content = stackPanel;
 
@@ -236,8 +326,53 @@ namespace HarryManual
             descriptionTextBox.Margin = new Thickness(0, 10, 0, 0);
             descriptionTextBox.BorderThickness = new Thickness(0);
 
+            CheckBox checkBox = new CheckBox()
+            {
+                Content = new TextBlock()
+                {
+                    Text = "Избранное",
+                    FontWeight = FontWeights.Bold
+
+                },
+                IsChecked = _favoriteRep.GetItems()
+        .FirstOrDefault(a => a.NoteId == article.ArticleId && a.Classification == "article") != null ? true : false
+            };
+
+            checkBox.Checked += (_sender, _e) => CheckBox_Checked();
+
+            checkBox.Unchecked += (_sender, _e) => CheckBox_Unchecked();
+
+            void CheckBox_Checked()
+            {
+                int favDataId = _favoriteRep.AddItem(new Favorite
+                {
+                    UserId = _user.UserId,
+                    NoteId = article.ArticleId,
+                    Classification = "article"
+                });
+            }
+
+            void CheckBox_Unchecked()
+            {
+                Favorite favToDelete = _favoriteRep.GetItems()
+                    .FirstOrDefault(a => a.NoteId == article.ArticleId && a.Classification == "article");
+
+                if (favToDelete != null)
+                {
+                    int favDataId = _favoriteRep.DeleteItem(favToDelete.FavoriteId);
+                    MessageBox.Show("Объект успешно удален!");
+                }
+                else
+                    MessageBox.Show("Ошибка. Элемент для удаления не найден!");
+
+            }
+
             stackPanel.Children.Add(nameTextBox);
             stackPanel.Children.Add(descriptionTextBox);
+
+
+            if (_user.Role == "admin")
+                stackPanel.Children.Add(checkBox);
 
             groupBox.Content = stackPanel;
 
@@ -292,10 +427,55 @@ namespace HarryManual
             textBox.Margin = new Thickness(0, 10, 0, 0);
             textBox.BorderThickness = new Thickness(0);
 
+            CheckBox checkBox = new CheckBox()
+            {
+                Content = new TextBlock()
+                {
+                    Text = "Избранное",
+                    FontWeight = FontWeights.Bold
+
+                },
+                IsChecked = _favoriteRep.GetItems()
+        .FirstOrDefault(a => a.NoteId == film.FilmId && a.Classification == "film") != null ? true : false
+            };
+
+            checkBox.Checked += (_sender, _e) => CheckBox_Checked();
+
+            checkBox.Unchecked += (_sender, _e) => CheckBox_Unchecked();
+
+            void CheckBox_Checked()
+            {
+                int favDataId = _favoriteRep.AddItem(new Favorite
+                {
+                    UserId = _user.UserId,
+                    NoteId = film.FilmId,
+                    Classification = "film"
+                });
+            }
+
+            void CheckBox_Unchecked()
+            {
+                Favorite favToDelete = _favoriteRep.GetItems()
+                    .FirstOrDefault(a => a.NoteId == film.FilmId && a.Classification == "film");
+
+                if (favToDelete != null)
+                {
+                    int favDataId = _favoriteRep.DeleteItem(favToDelete.FavoriteId);
+                    MessageBox.Show("Объект успешно удален!");
+                }
+                else
+                    MessageBox.Show("Ошибка. Элемент для удаления не найден!");
+
+            }
+
             stackPanel.Children.Add(nameTextBox);
             stackPanel.Children.Add(facultyTextBox);
             stackPanel.Children.Add(descriptionTextBox);
             stackPanel.Children.Add(textBox);
+
+            if (_user.Role == "admin")
+                stackPanel.Children.Add(checkBox);
+
 
             groupBox.Content = stackPanel;
                         
@@ -336,8 +516,53 @@ namespace HarryManual
             descriptionTextBox.Margin = new Thickness(0, 10, 0, 0);
             descriptionTextBox.BorderThickness = new Thickness(0);
 
+            CheckBox checkBox = new CheckBox()
+            {
+                Content = new TextBlock()
+                {
+                    Text = "Избранное",
+                    FontWeight = FontWeights.Bold
+
+                },
+                IsChecked = _favoriteRep.GetItems()
+        .FirstOrDefault(a => a.NoteId == note.NoteId && a.Classification == "note") != null ? true : false
+            };
+
+            checkBox.Checked += (_sender, _e) => CheckBox_Checked();
+
+            checkBox.Unchecked += (_sender, _e) => CheckBox_Unchecked();
+
+            void CheckBox_Checked()
+            {
+                int favDataId = _favoriteRep.AddItem(new Favorite
+                {
+                    UserId = _user.UserId,
+                    NoteId = note.NoteId,
+                    Classification = "note"
+                });
+            }
+
+            void CheckBox_Unchecked()
+            {
+                Favorite favToDelete = _favoriteRep.GetItems()
+                    .FirstOrDefault(a => a.NoteId == note.NoteId && a.Classification == "note");
+
+                if (favToDelete != null)
+                {
+                    int favDataId = _favoriteRep.DeleteItem(favToDelete.FavoriteId);
+                    MessageBox.Show("Объект успешно удален!");
+                }
+                else
+                    MessageBox.Show("Ошибка. Элемент для удаления не найден!");
+
+            }
+
             stackPanel.Children.Add(nameTextBox);
             stackPanel.Children.Add(descriptionTextBox);
+
+
+            if (_user.Role == "admin")
+                stackPanel.Children.Add(checkBox);
 
             groupBox.Content = stackPanel;
 
@@ -444,21 +669,103 @@ namespace HarryManual
             }
         }
 
-        private void ViewPerson(object sender, RoutedEventArgs e)
+        private void ViewAllResults(object sender, RoutedEventArgs e)
         {
             List<Person> persons = _personRep.GetItems();
 
+            if (_searchString.Length != 0 && _searchString != "")
+                persons = persons.Where(a => a.Name.Contains(_searchString)).ToList();
+
+            if (_checkedPersonsFilter.Count != 0 && _checkedPersonsFilter != null)
+                persons = persons.Where(person => _checkedPersonsFilter.Contains(person.Name)).ToList();
+
+            List<Quote> quotes = _quoteRep.GetItems();
+
+            if (_quote.Length != 0 && _quote != "")
+                quotes = quotes.Where(a => a.Content.Contains(_quote)).ToList();
+
+
+            List<Article> articles = _articleRep.GetItems();
+
+            List<Film> films = _filmRep.GetItems();
+
+            if (_searchString.Length != 0 && _searchString != "")
+                films = films.Where(a => a.Title.Contains(_searchString)).ToList();
+
+            if (_checkedFilmsFilter.Count != 0 && _checkedFilmsFilter != null)
+                films = films.Where(film => _checkedFilmsFilter.Contains(film.Title)).ToList();
+
+
+            List<Person_Film> person_films = _person_FilmRep.GetItems();
+
+            List<Person_Quote> person_quotes = _person_QuoteRep.GetItems();
+
+            List<Notes> notes = _noteRep.GetItems();
+
+            List<CustomCategory> customCategories = _customCategoryRep.GetItems();
+
+            List<CustomCategory_Note> customCategory_Notes = _customCategory_NoteRep.GetItems();
+
+            ProcessPersons(sender, e, films, quotes, persons, person_films, person_quotes);
+            ProcessQuotes(sender, e, persons, quotes, person_quotes);
+            ProcessArticles(sender, e, articles);
+            ProcessFilms(sender, e, films, person_films, persons);
+            ProcessNotes(sender, e, notes, customCategory_Notes, customCategories);
+        }
+
+
+        private void ProcessPersons(object sender, RoutedEventArgs e, List<Film> films, List<Quote> quotes, List<Person> persons, List<Person_Film> person_films, List<Person_Quote> person_quotes)
+        {
             foreach (Person person in persons)
             {
-                List<Person_Film> person_Films = _person_FilmRep.GetItems().Where(a => a.PersonId == person.PersonId).ToList();
+                List<Person_Film> person_Films = person_films.Where(a => a.PersonId == person.PersonId).ToList();
+                List<Film> appropriateFilms = films.Where(a => person_Films.Where(b => b.FilmId == a.FilmId).ToList().Count > 0).ToList();
+                List<Person_Quote> person_Quotes = person_quotes.Where(a => a.PersonId == person.PersonId).ToList();
+                List<Quote> appropriateQuotes = quotes.Where(a => person_Quotes.Where(b => b.QuoteId == a.QuoteId).ToList().Count > 0).ToList();
 
-                List<Film> appropriateFilms = _filmRep.GetItems().Where(a => person_Films.Where(b => b.FilmId == a.FilmId).ToList().Count > 0).ToList();
+                if (person != null && appropriateFilms != null && appropriateQuotes != null)
+                    AddView(sender, e, person, appropriateFilms, appropriateQuotes);
+            }
+        }
 
-                List<Person_Quote> person_Quotes = _person_QuoteRep.GetItems().Where(a => a.PersonId == person.PersonId).ToList();
+        private void ProcessQuotes(object sender, RoutedEventArgs e, List<Person> persons, List<Quote> quotes, List<Person_Quote> person_quotes)
+        {
+            foreach (Quote quote in quotes)
+            {
+                Person_Quote appropriatePerson_Quote = person_quotes.FirstOrDefault(a => a.QuoteId == quote.QuoteId);
+                Person appropriatePerson = persons.FirstOrDefault(a => a.PersonId == appropriatePerson_Quote.PersonId);
 
-                List<Quote> appropriateQuotes = _quoteRep.GetItems().Where(a => person_Quotes.Where(b => b.QuoteId == a.QuoteId).ToList().Count > 0).ToList();
+                if (appropriatePerson != null && quote != null)
+                    AddView(sender, e, appropriatePerson, quote);
+            }
+        }
 
-                AddView(sender, e, person, appropriateFilms, appropriateQuotes);
+        private void ProcessArticles(object sender, RoutedEventArgs e, List<Article> articles)
+        {
+            foreach (Article article in articles)
+                AddView(sender, e, article);
+        }
+
+        private void ProcessFilms(object sender, RoutedEventArgs e, List<Film> films, List<Person_Film> person_films, List<Person> persons)
+        {
+            foreach (Film film in films)
+            {
+                Person_Film appropriatePerson_Film = person_films.FirstOrDefault(a => a.FilmId == film.FilmId);
+                List<Person> appropriatePersons = persons.Where(a => a.PersonId == appropriatePerson_Film.PersonId).ToList();
+
+                if (appropriatePersons != null && film != null)
+                    AddView(sender, e, film, appropriatePersons);
+            }
+        }
+
+        private void ProcessNotes(object sender, RoutedEventArgs e, List<Notes> notes, List<CustomCategory_Note> customCategory_Notes, List<CustomCategory> customCategories)
+        {
+            foreach (Notes note in notes)
+            {
+                CustomCategory_Note appropriateCustomCategory_Note = customCategory_Notes.FirstOrDefault(a => a.NoteId == note.NoteId);
+                CustomCategory category = customCategories.FirstOrDefault(a => a.CategoryId == appropriateCustomCategory_Note.CustomCategoryId);
+
+                AddView(sender, e, note, category);
             }
         }
 
@@ -469,8 +776,7 @@ namespace HarryManual
 
             ResultStack.Items.Clear();
 
-            ViewResult(sender, e);
-
+            ViewAllResults(sender, e);
 
         }
 
@@ -488,7 +794,7 @@ namespace HarryManual
 
             AddFilmCheckBoxes();
 
-            ViewResult(sender, e);
+            ViewAllResults(sender, e);
 
         }
 

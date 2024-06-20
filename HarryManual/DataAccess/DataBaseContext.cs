@@ -18,6 +18,7 @@ namespace HarryManual
         public DbSet<CustomCategory> CustomCategories { get; set; }
         public DbSet<CustomCategory_Note> CustomCategory_Notes { get; set; }
         public DbSet<Notes> Notes { get; set; }
+        public DbSet<Favorite> Favorites { get; set; }
 
     }
 }

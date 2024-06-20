@@ -3,7 +3,7 @@ using System.Windows.Documents;
 
 namespace HarryManual.Dependencies
 {
-    internal interface IRepExtend<T> : IRep<T>
+    internal interface IRepExtendTitle<T> : IRep<T>
     {
         List<T> GetItems(string title);
     }

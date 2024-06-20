@@ -22,7 +22,7 @@ namespace HarryManual
         private readonly IRep<Article> _articleRep;
         private readonly IRep<Quote> _quoteRep;
         private readonly IRep<Person_Quote> _person_QuoteRep;
-        private readonly IRepExtend<Person> _personRep;
+        private readonly IRepExtendTitle<Person> _personRep;
         private readonly IRep<Film> _filmRep;
         private readonly IRep<Person_Film> _person_Film;
         private readonly IRep<CustomCategory> _customCategoryRep;

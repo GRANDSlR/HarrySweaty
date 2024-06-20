@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace HarryManual.DataAccess.Reps
 {
-    public class PersonRep : IRepExtend<Person>
+    public class PersonRep : IRepExtendTitle<Person>
     {
         private DataBaseContext _dbContext;
 
