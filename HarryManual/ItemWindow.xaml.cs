@@ -22,6 +22,8 @@ namespace HarryManual
     /// </summary>
     public partial class ItemWindow : System.Windows.Window
     {
+        private User _user;
+
         private IRep<Article> _articleRep;
         private IRep<Quote> _quoteRep;
         private IRep<Person_Quote> _person_QuoteRep;
@@ -35,6 +37,8 @@ namespace HarryManual
 
         private void InitHeaders(User user)
         {
+            _user = user;
+
             if (user.Role != "admin")
             {
                 Edit.Visibility = Visibility.Collapsed;
@@ -412,6 +416,8 @@ namespace HarryManual
 
         private void AddView(Film film, List<Person> persons)
         {
+            List<int> actorsIds = new List<int>();
+
             GroupBox groupBox = new GroupBox();
             groupBox.Header = "Фильм";
             groupBox.Width = 454;
@@ -433,6 +439,25 @@ namespace HarryManual
 
             nameStack.Children.Add(nameLabel);
             nameStack.Children.Add(nameTextBox);
+
+
+
+            TextBox dateTextBox = new TextBox();
+            dateTextBox.Background = Brushes.Transparent;
+            dateTextBox.Text = film.DateOfPublication.ToString();
+            dateTextBox.BorderThickness = new Thickness(0);
+
+            Label dateLabel = new Label();
+
+            nameLabel.Content = "Дата публикации: ";
+
+            StackPanel dateStack = new StackPanel();
+
+            dateStack.Orientation = Orientation.Horizontal;
+
+            dateStack.Children.Add(dateLabel);
+            dateStack.Children.Add(dateTextBox);
+
 
 
             TextBox facultyTextBox = new TextBox();
@@ -468,6 +493,7 @@ namespace HarryManual
             descriptionStack.Children.Add(descriptionTextBox);
 
             stackPanel.Children.Add(nameStack);
+            stackPanel.Children.Add(dateStack);
             stackPanel.Children.Add(facultyStack);
             stackPanel.Children.Add(descriptionStack);
 
@@ -480,14 +506,31 @@ namespace HarryManual
 
             StackPanel filmStackPanel = new StackPanel();
 
+            Label actorLabel = new Label();
+            actorLabel.Content = "";
+            actorLabel.HorizontalAlignment = HorizontalAlignment.Left;
+
             foreach (Person person in persons)
             {
-                TextBox textBox = new TextBox();
-                textBox.Background = Brushes.Transparent;
-                textBox.Text = person.Name + " ";
-                textBox.BorderThickness = new Thickness(0);
+                actorLabel.Content += person.Name + " ";
+            }
 
-                filmStackPanel.Children.Add(textBox);
+            TextBox textBoxActor = new TextBox();
+            textBoxActor.HorizontalAlignment = HorizontalAlignment.Left;
+            textBoxActor.TextWrapping = TextWrapping.Wrap;
+            textBoxActor.Width = 630;
+
+            Button actorAdditionbutton = new Button();
+            actorAdditionbutton.Content = "Добавить персонажа";
+            actorAdditionbutton.Width = 100;
+            actorAdditionbutton.Click += (_sender, _e) => AddActor();
+
+            filmStackPanel.Children.Add(actorLabel);
+
+            if (_user.Role == "admin")
+            {
+                filmStackPanel.Children.Add(textBoxActor);
+                filmStackPanel.Children.Add(actorAdditionbutton);
             }
 
             filmGroupBox.Content = filmStackPanel;
@@ -503,6 +546,38 @@ namespace HarryManual
             Delete.Click += (sender, e) => DeleteAction();
             Export.Click += (sender, e) => ExportAction();
 
+            void AddActor()
+            {
+                string nameText = textBoxActor.Text;
+
+                List<Person> existPerson = _personRep.GetItems(nameText);
+
+                
+                if (existPerson == null || existPerson.Count() == 0)
+                {
+                    MessageBox.Show("Ошибка. Такого персонажа нет!");
+                    return;
+                }
+
+                List<Person_Film> person_Film = _person_FilmRep.GetItems();
+
+                if (person_Film.Count != 0 && person_Film.FirstOrDefault(a => a.PersonId == existPerson[0].PersonId) != null)
+                {
+                    MessageBox.Show("Ошибка. Такой персонаж уже есть!");
+                    return;
+                }
+
+                if (nameText.Length == 0)
+                {
+                    MessageBox.Show("Ошибка. Не все поля заполнены!");
+                    return;
+                }
+
+                actorLabel.Content += nameText + " ";
+
+                actorsIds.Add(existPerson[0].PersonId);
+            }
+
             void ExportAction()
             {
                 Exporter.ExportFilm(film, persons);
@@ -517,8 +592,32 @@ namespace HarryManual
                     FilmId = film.FilmId,
                     Title = nameTextBox.Text,
                     Part = int.Parse(facultyTextBox.Text),
+                    DateOfPublication = film.DateOfPublication,
                     Description = descriptionTextBox.Text
                 });
+
+                List<string> actors = actorLabel.Content.ToString().Split(' ').ToList();
+
+                List<string> oldActors = persons.Select(a => a.Name).ToList();
+
+                List<string> newActors = actors.Except(oldActors).ToList();
+
+                if(newActors.Any())
+                {
+                    int newPerson_FilmId;
+
+                    foreach(string item in newActors)
+                    {
+                        if (item.Length > 1)
+                        {
+                            newPerson_FilmId = _person_FilmRep.AddItem(new Person_Film
+                            {
+                                FilmId = film.FilmId,
+                                PersonId = _personRep.GetItems(item)[0].PersonId
+                            });
+                        }
+                    }
+                }
 
 
                 MessageBox.Show("Объект успешно обновлен");

@@ -735,8 +735,8 @@ namespace HarryManual
                         continue;
                 }
 
-                Person_Film appropriatePerson_Film = person_films.FirstOrDefault(a => a.FilmId == film.FilmId);
-                List<Person> appropriatePersons = persons.Where(a => a.PersonId == appropriatePerson_Film.PersonId).ToList();
+                List<Person_Film> appropriatePerson_Film = person_films.Where(a => a.FilmId == film.FilmId).ToList();
+                List<Person> appropriatePersons = persons.Where(a => appropriatePerson_Film.Any(b => b.PersonId == a.PersonId)).ToList();
 
                 if (appropriatePersons != null && film != null)
                     AddView(sender, e, film, appropriatePersons);

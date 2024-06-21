@@ -388,7 +388,7 @@ namespace HarryManual
 
                 List<Person> existPerson = _personRep.GetItems(nameText);
 
-                if(existPerson == null)
+                if(existPerson == null || existPerson.Count() == 0)
                 {
                     MessageBox.Show("Ошибка. Такого персонажа нет!");
                     return;
