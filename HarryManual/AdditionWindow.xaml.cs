@@ -1,4 +1,5 @@
-﻿using HarryManual.DataAccess.HarryCarrier;
+﻿using HarryManual.DataAccess;
+using HarryManual.DataAccess.HarryCarrier;
 using HarryManual.DataAccess.Reps;
 using HarryManual.Dependencies;
 using System;
@@ -19,6 +20,9 @@ namespace HarryManual
     /// </summary>
     public partial class AdditionWindow : Window
     {
+
+        private readonly User _user;
+
         private readonly IRep<Article> _articleRep;
         private readonly IRep<Quote> _quoteRep;
         private readonly IRep<Person_Quote> _person_QuoteRep;
@@ -30,9 +34,11 @@ namespace HarryManual
         private readonly IRep<CustomCategory_Note> _customCategory_NoteRep;
 
 
-        public AdditionWindow()
+        public AdditionWindow(User user)
         {
             InitializeComponent();
+
+            _user = user;
 
             _articleRep = new ArticleRep(new DataBaseContext());
             _quoteRep = new QuoteRep(new DataBaseContext());
@@ -336,10 +342,10 @@ namespace HarryManual
 
             GroupBox groupBoxActors = new GroupBox();
             groupBoxActors.Height = 100;
-            groupBoxActors.Header = "Актеры";
+            groupBoxActors.Header = "Персонажи";
 
             Label actorLabel = new Label();
-            actorLabel.Content = "Актеры: ";
+            actorLabel.Content = "";
             actorLabel.HorizontalAlignment = HorizontalAlignment.Left;
 
             TextBox textBoxActor = new TextBox();
@@ -348,7 +354,7 @@ namespace HarryManual
             textBoxActor.Width = 630;
 
             Button actorAdditionbutton = new Button();
-            actorAdditionbutton.Content = "Добавить актера";
+            actorAdditionbutton.Content = "Добавить персонажа";
             actorAdditionbutton.Width = 100;
             actorAdditionbutton.Click += (_sender, _e) => AddActor();
 
@@ -384,7 +390,7 @@ namespace HarryManual
 
                 if(existPerson == null)
                 {
-                    MessageBox.Show("Ошибка. Такого актера нет!");
+                    MessageBox.Show("Ошибка. Такого персонажа нет!");
                     return;
                 }
 
@@ -392,7 +398,7 @@ namespace HarryManual
 
                 if(person_Film.Count != 0 && person_Film.FirstOrDefault(a => a.PersonId == existPerson[0].PersonId) != null)
                 {
-                    MessageBox.Show("Ошибка. Такой актер уже есть!");
+                    MessageBox.Show("Ошибка. Такой персонажа уже есть!");
                     return;
                 }
 
@@ -485,12 +491,43 @@ namespace HarryManual
 
             Button button = new Button();
             button.Content = "Запись";
-            button.Width = 100;
+            button.Width = 200;
             button.Click += (_sender, _e) => ReadFormData();
             ((StackPanel)listViewItem.Content).Children.Add(button);
 
+            Button deleteButton = new Button();
+            deleteButton.Content = "Удалить";
+            deleteButton.Width = 200;
+            deleteButton.Margin= new Thickness(0, 10, 0, 0);
+            deleteButton.Click += (_sender, _e) => DeleteCategory();
+            ((StackPanel)listViewItem.Content).Children.Add(deleteButton);
+
+            if(_user.Role != "admin")
+                deleteButton.Visibility = Visibility.Collapsed;
+
             ResultView.Items.Clear();
             ResultView.Items.Add(listViewItem);
+
+            void DeleteCategory()
+            {
+                try
+                {
+                    int deletedCategoryId = _customCategoryRep.DeleteItem(category.CategoryId);
+
+                    List<CustomCategory_Note> customCategory_NoteToDelete = _customCategory_NoteRep.GetItems()
+                        .Where(a => a.CustomCategoryId == category.CategoryId).ToList();
+
+                    int deletedCustomCategory_NoteId;
+
+                    foreach (CustomCategory_Note item in customCategory_NoteToDelete)
+                        deletedCustomCategory_NoteId = _customCategory_NoteRep.DeleteItem(item.CustomCategory_NoteId);
+
+                    MessageBox.Show("Категрия успешно удалена!");
+                }
+                catch {
+                    MessageBox.Show("Ошибка удаления категории!");
+                }
+            }
 
             void ReadFormData()
             {

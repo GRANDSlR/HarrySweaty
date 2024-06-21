@@ -43,7 +43,7 @@ namespace HarryManual.DataAccess.Reps
         {
             return _dbContext.Persons
                 .AsNoTracking()
-                .Where(a => a.Name.ToLower().Contains(title.ToLower()))
+                .Where(a => a.Name.ToLower() == title.ToLower())
                 .ToList();
         }
 

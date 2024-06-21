@@ -583,12 +583,12 @@ namespace HarryManual
         }
 
         //отображение результатов по фильтрам
-        private void ViewAllResults(object sender, RoutedEventArgs e)
+        private void ViewResults(object sender, RoutedEventArgs e)
         {
             List<Person> persons = _personRep.GetItems();
 
             if (_searchString.Length != 0 && _searchString != "")
-                persons = persons.Where(a => a.Name.Contains(_searchString)).ToList();
+                persons = persons.Where(a => a.Name.ToLower().Contains(_searchString.ToLower())).ToList();
 
             if (_checkedPersonsFilter.Count != 0 && _checkedPersonsFilter != null)
                 persons = persons.Where(person => _checkedPersonsFilter.Contains(person.Name)).ToList();
@@ -601,10 +601,13 @@ namespace HarryManual
 
             List<Article> articles = _articleRep.GetItems();
 
+            if (_searchString.Length != 0 && _searchString != "")
+                articles = articles.Where(a => a.Title.ToLower().Contains(_searchString.ToLower())).ToList();
+
             List<Film> films = _filmRep.GetItems();
 
             if (_searchString.Length != 0 && _searchString != "")
-                films = films.Where(a => a.Title.Contains(_searchString)).ToList();
+                films = films.Where(a => a.Title.ToLower().Contains(_searchString.ToLower())).ToList();
 
             if (_checkedFilmsFilter.Count != 0 && _checkedFilmsFilter != null)
                 films = films.Where(film => _checkedFilmsFilter.Contains(film.Title)).ToList();
@@ -615,6 +618,9 @@ namespace HarryManual
             List<Person_Quote> person_quotes = _person_QuoteRep.GetItems();
 
             List<Notes> notes = _noteRep.GetItems();
+
+            if (_searchString.Length != 0 && _searchString != "")
+                notes = notes.Where(a => a.NoteTitle.ToLower().Contains(_searchString.ToLower())).ToList();
 
             List<CustomCategory> customCategories = _customCategoryRep.GetItems();
 
@@ -763,9 +769,25 @@ namespace HarryManual
         {
             InitData();
 
+
+            PersonCheck.Items.Clear();
+
+            AddPersonCheckBoxes();
+
+
+            FilmCheck.Items.Clear();
+
+            AddFilmCheckBoxes();
+
+
+            CategoryFilter.Items.Clear();
+
+            LoadCategoryFilter();
+
+
             ResultStack.Items.Clear();
 
-            ViewAllResults(sender, e);
+            ViewResults(sender, e);
 
         }
 
@@ -773,18 +795,19 @@ namespace HarryManual
         //Открытие окна добавления записей
         private void AddCategory_Click_1(object sender, RoutedEventArgs e)
         {
-            AdditionWindow additionWindow = new AdditionWindow();
+            AdditionWindow additionWindow = new AdditionWindow(_user);
 
             additionWindow.Show();
         }
 
+        //Загрузка окна
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             AddPersonCheckBoxes();
 
             AddFilmCheckBoxes();
 
-            ViewAllResults(sender, e);
+            ViewResults(sender, e);
 
             LoadCategoryFilter();
 
@@ -801,7 +824,6 @@ namespace HarryManual
                 string checkBoxHorizontalAlignment = "Left";
                 string checkBoxVerticalAlignment = "Top";
                 string checkBoxHeight = "16";
-                string checkBoxWidth = "71";
 
                 CheckBox checkBox = new CheckBox()
                 {
@@ -809,7 +831,6 @@ namespace HarryManual
                     HorizontalAlignment = (HorizontalAlignment)Enum.Parse(typeof(HorizontalAlignment), checkBoxHorizontalAlignment),
                     VerticalAlignment = (VerticalAlignment)Enum.Parse(typeof(VerticalAlignment), checkBoxVerticalAlignment),
                     Height = double.Parse(checkBoxHeight),
-                    Width = double.Parse(checkBoxWidth)
                 };
 
                 ListViewItem listViewItem = new ListViewItem();
@@ -831,7 +852,6 @@ namespace HarryManual
                 string checkBoxHorizontalAlignment = "Left";
                 string checkBoxVerticalAlignment = "Top";
                 string checkBoxHeight = "16";
-                string checkBoxWidth = "71";
 
                 CheckBox checkBox = new CheckBox()
                 {
@@ -839,7 +859,6 @@ namespace HarryManual
                     HorizontalAlignment = (HorizontalAlignment)Enum.Parse(typeof(HorizontalAlignment), checkBoxHorizontalAlignment),
                     VerticalAlignment = (VerticalAlignment)Enum.Parse(typeof(VerticalAlignment), checkBoxVerticalAlignment),
                     Height = double.Parse(checkBoxHeight),
-                    Width = double.Parse(checkBoxWidth)
                 };
 
                 ListViewItem listViewItem = new ListViewItem();
@@ -897,7 +916,7 @@ namespace HarryManual
             quotesButton.Click += (sender, e) => {ResultStack.Items.Clear(); ProcessQuotes(sender, e, persons, quotes, person_quotes); };
             articlesButton.Click += (sender, e) => {ResultStack.Items.Clear(); ProcessArticles(sender, e, articles); };
             filmsButton.Click += (sender, e) =>  {ResultStack.Items.Clear(); ProcessFilms(sender, e, films, person_films, persons); };
-            allButton.Click += (sender, e) => { ResultStack.Items.Clear(); ViewAllResults(sender, e); } ;
+            allButton.Click += (sender, e) => { ResultStack.Items.Clear(); ViewResults(sender, e); } ;
 
             CategoryFilter.Items.Add(new ListViewItem() { Content = personsButton });
             CategoryFilter.Items.Add(new ListViewItem() { Content = quotesButton });
@@ -927,6 +946,17 @@ namespace HarryManual
         {
             ResultStack.Items.Clear();
 
+
+            PersonCheck.Items.Clear();
+
+            AddPersonCheckBoxes();
+
+
+            FilmCheck.Items.Clear();
+
+            AddFilmCheckBoxes();
+
+
             CategoryFilter.Items.Clear();
 
             LoadCategoryFilter();
@@ -945,7 +975,8 @@ namespace HarryManual
             {
                 CheckBox checkBox = FindVisualChild<CheckBox>(listViewItem);
 
-                checkBox.IsChecked = false;
+                if(checkBox != null)
+                    checkBox.IsChecked = false;
             }
 
 
@@ -953,13 +984,14 @@ namespace HarryManual
             {
                 CheckBox checkBox = FindVisualChild<CheckBox>(listViewItem);
 
-                checkBox.IsChecked = false;
+                if (checkBox != null)
+                    checkBox.IsChecked = false;
 
             }
 
             RadioFavAll.IsChecked = true;
 
-            ViewAllResults(sender, e);
+            ViewResults(sender, e);
         }
 
         //открытие справки
