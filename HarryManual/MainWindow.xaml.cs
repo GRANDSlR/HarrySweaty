@@ -915,6 +915,10 @@ namespace HarryManual
         {
             ResultStack.Items.Clear();
 
+            CategoryFilter.Items.Clear();
+
+            LoadCategoryFilter();
+
             _searchString = "";
             _quote = "";
             _checkedPersonsFilter.Clear();

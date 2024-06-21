@@ -12,13 +12,15 @@ using System.Windows.Media;
 using System.Runtime.InteropServices;
 using System.Linq;
 using Label = System.Windows.Controls.Label;
+using HarryManual.Helpers;
+using Microsoft.Office.Interop.Word;
 
 namespace HarryManual
 {
     /// <summary>
     /// Логика взаимодействия для ItemWindow.xaml
     /// </summary>
-    public partial class ItemWindow : Window
+    public partial class ItemWindow : System.Windows.Window
     {
         private IRep<Article> _articleRep;
         private IRep<Quote> _quoteRep;
@@ -209,6 +211,14 @@ namespace HarryManual
 
             Edit.Click += (sender, e) => EditAction();
             Delete.Click += (sender, e) => DeleteAction();
+            Export.Click += (sender, e) => ExportAction();
+
+            void ExportAction()
+            {
+                Exporter.ExportPerson(person, films, quotes);
+
+                MessageBox.Show("Данные экспортированы успешно!");
+            }
 
             void EditAction()
             {
@@ -284,6 +294,14 @@ namespace HarryManual
 
             Edit.Click += (sender, e) => EditAction();
             Delete.Click += (sender, e) => DeleteAction();
+            Export.Click += (sender, e) => ExportAction();
+
+            void ExportAction()
+            {
+                Exporter.ExportQuote(person, quote);
+
+                MessageBox.Show("Данные экспортированы успешно!");
+            }
 
             void EditAction()
             {
@@ -361,6 +379,14 @@ namespace HarryManual
 
             Edit.Click += (sender, e) => EditAction();
             Delete.Click += (sender, e) => DeleteAction();
+            Export.Click += (sender, e) => ExportAction();
+
+            void ExportAction()
+            {
+                Exporter.ExportArticle(article);
+
+                MessageBox.Show("Данные экспортированы успешно!");
+            }
 
             void EditAction()
             {
@@ -475,6 +501,14 @@ namespace HarryManual
 
             Edit.Click += (sender, e) => EditAction();
             Delete.Click += (sender, e) => DeleteAction();
+            Export.Click += (sender, e) => ExportAction();
+
+            void ExportAction()
+            {
+                Exporter.ExportFilm(film, persons);
+
+                MessageBox.Show("Данные экспортированы успешно!");
+            }
 
             void EditAction()
             {
@@ -543,6 +577,14 @@ namespace HarryManual
 
             Edit.Click += (sender, e) => EditAction();
             Delete.Click += (sender, e) => DeleteAction();
+            Export.Click += (sender, e) => ExportAction();
+
+            void ExportAction()
+            {
+                Exporter.ExportNote(note, category);
+
+                MessageBox.Show("Данные экспортированы успешно!");
+            }
 
             void EditAction()
             {
