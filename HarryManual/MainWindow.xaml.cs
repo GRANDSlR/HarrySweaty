@@ -915,6 +915,34 @@ namespace HarryManual
         {
             ResultStack.Items.Clear();
 
+            _searchString = "";
+            _quote = "";
+            _checkedPersonsFilter.Clear();
+            _checkedFilmsFilter.Clear();
+            _radioFavState = "Все";
+
+            MainSearchString.Text = "";
+
+            Quote.Text = "";
+
+            foreach (ListViewItem listViewItem in PersonCheck.Items)
+            {
+                CheckBox checkBox = FindVisualChild<CheckBox>(listViewItem);
+
+                checkBox.IsChecked = false;
+            }
+
+
+            foreach (ListViewItem listViewItem in FilmCheck.Items)
+            {
+                CheckBox checkBox = FindVisualChild<CheckBox>(listViewItem);
+
+                checkBox.IsChecked = false;
+
+            }
+
+            RadioFavAll.IsChecked = true;
+
             ViewAllResults(sender, e);
         }
     }

@@ -11,6 +11,7 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using System.Runtime.InteropServices;
 using System.Linq;
+using Label = System.Windows.Controls.Label;
 
 namespace HarryManual
 {
@@ -106,22 +107,56 @@ namespace HarryManual
 
             TextBox nameTextBox = new TextBox();
             nameTextBox.Background = Brushes.Transparent;
-            nameTextBox.Text = "Имя: " + person.Name;
+            nameTextBox.Text = person.Name;
             nameTextBox.BorderThickness = new Thickness(0);
+
+            Label nameLabel = new Label();
+
+            nameLabel.Content = "Имя: ";
+
+            StackPanel nameStack = new StackPanel();
+
+            nameStack.Orientation = Orientation.Horizontal;
+
+            nameStack.Children.Add(nameLabel);
+            nameStack.Children.Add(nameTextBox);
+
 
             TextBox facultyTextBox = new TextBox();
             facultyTextBox.Background = Brushes.Transparent;
-            facultyTextBox.Text = "Пол: " + person.Sex;
+            facultyTextBox.Text = person.Sex;
             facultyTextBox.BorderThickness = new Thickness(0);
+
+            Label facultyLabel = new Label();
+
+            facultyLabel.Content = "Пол: ";
+
+            StackPanel facultyStack = new StackPanel();
+
+            facultyStack.Orientation = Orientation.Horizontal;
+
+            facultyStack.Children.Add(facultyLabel);
+            facultyStack.Children.Add(facultyTextBox);
 
             TextBox descriptionTextBox = new TextBox();
             descriptionTextBox.Background = Brushes.Transparent;
-            descriptionTextBox.Text = "Описание: " + person.Description;
+            descriptionTextBox.Text = person.Description;
             descriptionTextBox.BorderThickness = new Thickness(0);
 
-            stackPanel.Children.Add(nameTextBox);
-            stackPanel.Children.Add(facultyTextBox);
-            stackPanel.Children.Add(descriptionTextBox);
+            Label descriptionLabel = new Label();
+
+            descriptionLabel.Content = "Описание: ";
+
+            StackPanel descriptionStack = new StackPanel();
+
+            descriptionStack.Orientation = Orientation.Horizontal;
+
+            descriptionStack.Children.Add(descriptionLabel);
+            descriptionStack.Children.Add(descriptionTextBox);
+
+            stackPanel.Children.Add(nameStack);
+            stackPanel.Children.Add(facultyStack);
+            stackPanel.Children.Add(descriptionStack);
 
             groupBox.Content = stackPanel;
 
@@ -207,17 +242,38 @@ namespace HarryManual
 
             TextBox nameTextBox = new TextBox();
             nameTextBox.Background = Brushes.Transparent;
-            nameTextBox.Text = "Имя персонажа: " + person.Name;
+            nameTextBox.Text = person.Name;
             nameTextBox.BorderThickness = new Thickness(0);
 
+            Label nameLabel = new Label();
+
+            nameLabel.Content = "Имя персонажа: ";
+
+            StackPanel nameStack = new StackPanel();
+
+            nameStack.Orientation = Orientation.Horizontal;
+
+            nameStack.Children.Add(nameLabel);
+            nameStack.Children.Add(nameTextBox);
 
             TextBox descriptionTextBox = new TextBox();
             descriptionTextBox.Background = Brushes.Transparent;
-            descriptionTextBox.Text = "Цитата: " + quote.Content;
+            descriptionTextBox.Text = quote.Content;
             descriptionTextBox.BorderThickness = new Thickness(0);
 
-            stackPanel.Children.Add(nameTextBox);
-            stackPanel.Children.Add(descriptionTextBox);
+            Label descriptionLabel = new Label();
+
+            descriptionLabel.Content = "Цитата: ";
+
+            StackPanel descriptionStack = new StackPanel();
+
+            descriptionStack.Orientation = Orientation.Horizontal;
+
+            descriptionStack.Children.Add(descriptionLabel);
+            descriptionStack.Children.Add(descriptionTextBox);
+
+            stackPanel.Children.Add(nameStack);
+            stackPanel.Children.Add(descriptionStack);
 
             groupBox.Content = stackPanel;
 
@@ -276,6 +332,8 @@ namespace HarryManual
 
             StackPanel stackPanel = new StackPanel();
 
+            
+
             TextBox nameTextBox = new TextBox();
             nameTextBox.Background = Brushes.Transparent;
             nameTextBox.Text = article.Title;
@@ -284,6 +342,7 @@ namespace HarryManual
             nameTextBox.BorderThickness = new Thickness(0);
 
 
+            
             TextBox descriptionTextBox = new TextBox();
             descriptionTextBox.Background = Brushes.Transparent;
             descriptionTextBox.Text = article.Description;
@@ -335,22 +394,56 @@ namespace HarryManual
 
             TextBox nameTextBox = new TextBox();
             nameTextBox.Background = Brushes.Transparent;
-            nameTextBox.Text = "Название: " + film.Title;
+            nameTextBox.Text = film.Title;
             nameTextBox.BorderThickness = new Thickness(0);
+
+            Label nameLabel = new Label();
+
+            nameLabel.Content = "Название: ";
+
+            StackPanel nameStack = new StackPanel();
+
+            nameStack.Orientation = Orientation.Horizontal;
+
+            nameStack.Children.Add(nameLabel);
+            nameStack.Children.Add(nameTextBox);
+
 
             TextBox facultyTextBox = new TextBox();
             facultyTextBox.Background = Brushes.Transparent;
-            facultyTextBox.Text = "Часть: " + film.Part;
+            facultyTextBox.Text = film.Part.ToString();
             facultyTextBox.BorderThickness = new Thickness(0);
+
+            Label facultyLabel = new Label();
+
+            facultyLabel.Content = "Часть: ";
+
+            StackPanel facultyStack = new StackPanel();
+
+            facultyStack.Orientation = Orientation.Horizontal;
+
+            facultyStack.Children.Add(facultyLabel);
+            facultyStack.Children.Add(facultyTextBox);
 
             TextBox descriptionTextBox = new TextBox();
             descriptionTextBox.Background = Brushes.Transparent;
-            descriptionTextBox.Text = "Описание: " + film.Description;
+            descriptionTextBox.Text = film.Description;
             descriptionTextBox.BorderThickness = new Thickness(0);
 
-            stackPanel.Children.Add(nameTextBox);
-            stackPanel.Children.Add(facultyTextBox);
-            stackPanel.Children.Add(descriptionTextBox);
+            Label descriptionLabel = new Label();
+
+            descriptionLabel.Content = "Описание: ";
+
+            StackPanel descriptionStack = new StackPanel();
+
+            descriptionStack.Orientation = Orientation.Horizontal;
+
+            descriptionStack.Children.Add(descriptionLabel);
+            descriptionStack.Children.Add(descriptionTextBox);
+
+            stackPanel.Children.Add(nameStack);
+            stackPanel.Children.Add(facultyStack);
+            stackPanel.Children.Add(descriptionStack);
 
             groupBox.Content = stackPanel;
 
@@ -436,6 +529,7 @@ namespace HarryManual
             descriptionTextBox.Text = note.NoteContent;
             descriptionTextBox.Margin = new Thickness(0, 10, 0, 0);
             descriptionTextBox.BorderThickness = new Thickness(0);
+
 
             stackPanel.Children.Add(nameTextBox);
             stackPanel.Children.Add(descriptionTextBox);
