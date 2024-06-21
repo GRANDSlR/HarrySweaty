@@ -449,7 +449,7 @@ namespace HarryManual
 
             Label dateLabel = new Label();
 
-            nameLabel.Content = "Дата публикации: ";
+            dateLabel.Content = "Дата публикации: ";
 
             StackPanel dateStack = new StackPanel();
 
@@ -501,7 +501,7 @@ namespace HarryManual
 
 
             GroupBox filmGroupBox = new GroupBox();
-            filmGroupBox.Header = "Актеры";
+            filmGroupBox.Header = "Персонажи";
             filmGroupBox.Width = 454;
 
             StackPanel filmStackPanel = new StackPanel();
@@ -512,7 +512,7 @@ namespace HarryManual
 
             foreach (Person person in persons)
             {
-                actorLabel.Content += person.Name + " ";
+                actorLabel.Content += person.Name + " - ";
             }
 
             TextBox textBoxActor = new TextBox();
@@ -522,7 +522,7 @@ namespace HarryManual
 
             Button actorAdditionbutton = new Button();
             actorAdditionbutton.Content = "Добавить персонажа";
-            actorAdditionbutton.Width = 100;
+            actorAdditionbutton.Width = 120;
             actorAdditionbutton.Click += (_sender, _e) => AddActor();
 
             filmStackPanel.Children.Add(actorLabel);
@@ -596,7 +596,7 @@ namespace HarryManual
                     Description = descriptionTextBox.Text
                 });
 
-                List<string> actors = actorLabel.Content.ToString().Split(' ').ToList();
+                List<string> actors = actorLabel.Content.ToString().Split(new string[] { " - " }, StringSplitOptions.None).ToList();
 
                 List<string> oldActors = persons.Select(a => a.Name).ToList();
 
