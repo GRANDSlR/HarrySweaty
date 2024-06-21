@@ -54,7 +54,7 @@ namespace HarryManual
         }
 
 
-
+        //отображение формы добавления записи в зависимости от выбранной категории
         private void QuoteRadio(object sender, RoutedEventArgs e)
         {
 
@@ -521,7 +521,9 @@ namespace HarryManual
 
 
         }
+        //
 
+        //получение категорий
         private void GetCategories(object sender, RoutedEventArgs e)
         {
             StackPanel stackPanel = new StackPanel();
@@ -562,7 +564,7 @@ namespace HarryManual
             RadioView.Items.Add(stackPanel);
         }
 
-
+        //открытие выпадающего списка -> отображение категорий
         private void Expander_Expanded(object sender, RoutedEventArgs e)
         {
             GetCategories(sender, e);

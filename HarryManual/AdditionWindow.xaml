@@ -18,9 +18,9 @@
             <Expander Height="150" Header="Категория" Width="150" IsExpanded="False" Margin="0,10,0,0" Expanded="Expander_Expanded">
                 <GroupBox Header="" Margin="0,0,0,-13">
                     <ListView x:Name="RadioView">
-                        
+
                     </ListView>
-                    
+
                 </GroupBox>
 
             </Expander>
@@ -28,86 +28,10 @@
 
 
         <ListView  Grid.Column="1" x:Name="ResultView">
-            <!-- Здесь могут быть элементы списка -->
+            
         </ListView>
 
 
 
     </Grid>
 </Window>
-
-
-<!-- <StackPanel>
-    <RadioButton Content="Цитаты" Checked="QuoteRadio"/>
-    <RadioButton Content="Персонажи" Checked="PersRadio"/>
-    <RadioButton Content="Статьи" Checked="ArticleRadio"/>
-    <RadioButton Content="Фильмы" Checked="FilmRadio"/>
-
-    </StackPanel> -->
-    
-<!--  <RadioButton Content="Персонажи" Checked="PersRadio"/>
-    <RadioButton Content="Статьи" Checked="ArticleRadio"/>
-    <RadioButton Content="Фильмы" Checked="FilmRadio"/> -->
-
-
-<!-- 
-    <Label Content="Цитата" Width="48"/>
-    <GroupBox Height="40" Header="Контент">
-        <TextBox HorizontalAlignment="Left" TextWrapping="Wrap" Width="630"/>
-    </GroupBox>
-
-    <GroupBox Height="40" Header="Автор">
-        <TextBox HorizontalAlignment="Left" TextWrapping="Wrap" Width="630"/>
-    </GroupBox>
--->
-
-
-<!-- 
-    <Label Content="Персонаж" Width="68"/>
-<GroupBox Height="40" Header="Имя">
-    <TextBox HorizontalAlignment="Left" TextWrapping="Wrap" Width="630"/>
-</GroupBox>
-
-<GroupBox Height="60" Header="Пол">
-    <StackPanel>
-        <RadioButton Content="Мужской" IsChecked="True"/>
-        <RadioButton Content="Женский" />
-    </StackPanel>
-</GroupBox>
-
-<GroupBox Height="100" Header="Описание">
-    <TextBox HorizontalAlignment="Left" TextWrapping="Wrap" Width="630"/>
-</GroupBox>
--->
-
-
-<!-- 
-    <Label Content="Статья" Width="48"/>
-    <GroupBox Height="40" Header="Название">
-        <TextBox HorizontalAlignment="Left" TextWrapping="Wrap" Width="630"/>
-    </GroupBox>
-
-    <GroupBox Height="100" Header="Описание">
-        <TextBox HorizontalAlignment="Left" TextWrapping="Wrap" Width="630"/>
-    </GroupBox>
-    -->
-
-
-<!-- 
-    <Label Content="Фильм" Width="48"/>
-<GroupBox Height="40" Header="Название">
-    <TextBox HorizontalAlignment="Left" TextWrapping="Wrap" Width="630"/>
-</GroupBox>
-
-<GroupBox Height="40" Header="Номер">
-    <TextBox HorizontalAlignment="Left" TextWrapping="Wrap" Width="630"/>
-</GroupBox>
-
-<GroupBox Height="100" Header="Описание">
-    <TextBox HorizontalAlignment="Left" TextWrapping="Wrap" Width="630"/>
-</GroupBox>
-
-<GroupBox Height="60" Header="Дата съемок">
-    <DatePicker/>
-</GroupBox>
-    -->

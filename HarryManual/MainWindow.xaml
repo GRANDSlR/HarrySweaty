@@ -34,18 +34,18 @@
                             <RowDefinition Height="88"></RowDefinition>
                             <RowDefinition/>
                         </Grid.RowDefinitions>
-                        
+
                         <TextBox x:Name="MainSearchString"  HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Center" Width="180" BorderThickness="0,0,0,0" Height="18" Grid.ColumnSpan="2" Margin="7,0,0,0"/>
-                        
+
                         <GroupBox Header="Персонажи" Grid.Row="1" Grid.ColumnSpan="2">
                             <ListView x:Name="PersonCheck" Background="Transparent">
-                                
+
                             </ListView>
                         </GroupBox>
 
                         <GroupBox Header="Фильмы" Grid.Row="2" Grid.ColumnSpan="2">
                             <ListView x:Name="FilmCheck" Background="Transparent">
-                                
+
                             </ListView>
                         </GroupBox>
 
@@ -72,6 +72,7 @@
 
                     <ListView Grid.Column="1" x:Name="ResultStack">
                     </ListView>
+                    <Button Content="Помощь" HorizontalAlignment="Center" Margin="0,440,0,0" VerticalAlignment="Top" Width="113" Click="Button_Click_1"/>
 
 
                 </Grid>
@@ -105,8 +106,8 @@ while (stackPanel.Children.Count > 0)
     stackPanel.Children.RemoveAt(stackPanel.Children.Count - 1);
 }
 -->
-    
-    
+
+
 <!-- 
     <Button Content="Персонажи" Height="26" Width="116"/>
     <Button Content="Статьи" Height="26" Width="116"/>

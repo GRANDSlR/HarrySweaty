@@ -1,14 +1,9 @@
-﻿using HarryManual;
-using HarryManual.DataAccess;
+﻿using HarryManual.DataAccess;
 using System;
-using System.Data.Entity;
-using System.IO.Packaging;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Markup;
 
 
 namespace HarryManual
@@ -24,6 +19,7 @@ namespace HarryManual
             dbContext = new DataBaseContext();
         } 
 
+        //активация ргистрации или логина при нажатии на "Вход"
         private void btnSubmit_Click(object sender, RoutedEventArgs e)
         {
             string username = UsernameTextBox.Text;
@@ -94,6 +90,7 @@ namespace HarryManual
             }
         }
 
+        //хеширование переданной строки
         public static string ComputeHash(string password)
         {
             using (SHA256 sha256 = SHA256.Create())

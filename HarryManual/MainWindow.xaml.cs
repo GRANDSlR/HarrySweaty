@@ -5,6 +5,7 @@ using HarryManual.Dependencies;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -19,12 +20,14 @@ namespace HarryManual
     {
         private User _user;
 
+        //Фильтрационные параметры
         private string _searchString = "";
         private string _quote = "";
         private List<string> _checkedPersonsFilter = new List<string>();
         private List<string> _checkedFilmsFilter = new List<string>();
         private string _radioFavState;
 
+        //Репозитории для взаимодейтвия с БД
         private readonly IRep<Article> _articleRep;
         private readonly IRep<Quote> _quoteRep;
         private readonly IRep<Person_Quote> _person_QuoteRep;
@@ -60,7 +63,7 @@ namespace HarryManual
 
         }
 
-
+        //Поиск ближайшего child у элемента
         private static T FindVisualChild<T>(DependencyObject parent) where T : DependencyObject
         {
             if (parent == null)
@@ -86,6 +89,7 @@ namespace HarryManual
             return null;
         }
 
+        //считывание фильтрационных параметров
         private void InitData()
         {
             _searchString = MainSearchString.Text;
@@ -133,6 +137,8 @@ namespace HarryManual
 
         }
 
+
+        //отображение результатов поиска (динамическая вставка кода)
         private void AddView(object sender, RoutedEventArgs e, Person person, List<Film> films, List<Quote> quotes)
         {
             GroupBox groupBox = new GroupBox();
@@ -576,7 +582,7 @@ namespace HarryManual
             }
         }
 
-
+        //отображение результатов по фильтрам
         private void ViewAllResults(object sender, RoutedEventArgs e)
         {
             List<Person> persons = _personRep.GetItems();
@@ -634,6 +640,7 @@ namespace HarryManual
         }
 
 
+        //генерация результатов с установлеными критериями категорий
         private void ProcessPersons(object sender, RoutedEventArgs e, List<Film> films, List<Quote> quotes, List<Person> persons, List<Person_Film> person_films, List<Person_Quote> person_quotes)
         {
             foreach (Person person in persons)
@@ -751,6 +758,7 @@ namespace HarryManual
         }
 
 
+        //фильтрация и отображение результатов
         private void GetFilterValues(object sender, RoutedEventArgs e)
         {
             InitData();
@@ -762,6 +770,7 @@ namespace HarryManual
         }
 
 
+        //Открытие окна добавления записей
         private void AddCategory_Click_1(object sender, RoutedEventArgs e)
         {
             AdditionWindow additionWindow = new AdditionWindow();
@@ -781,6 +790,7 @@ namespace HarryManual
 
         }
 
+        //отображение фильтров по Персонажам и Фильмам
         private void AddPersonCheckBoxes()
         {
             List<Person> persons = _personRep.GetItems();
@@ -839,6 +849,7 @@ namespace HarryManual
             }
         }
 
+        //загрузка категорий
         private void LoadCategoryFilter()
         {
             List<Person> persons = _personRep.GetItems();
@@ -911,6 +922,7 @@ namespace HarryManual
 
         }
 
+        //обнуление фильрационных параметров
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             ResultStack.Items.Clear();
@@ -949,5 +961,22 @@ namespace HarryManual
 
             ViewAllResults(sender, e);
         }
+
+        //открытие справки
+        private void Button_Click_1(object sender, RoutedEventArgs e)
+        {
+            string projectPath = AppDomain.CurrentDomain.BaseDirectory;
+            string filePath = Path.Combine(projectPath, $"Test.chm");
+
+            try
+            {
+                System.Diagnostics.Process.Start(filePath);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Ошибка при открытии файла справки: " + ex.Message);
+            }
+        }
     }
 }
+
