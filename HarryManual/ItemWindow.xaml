@@ -7,9 +7,22 @@
         mc:Ignorable="d"
         Title="ItemWindow" Height="300" Width="500">
     <Grid>
-        <ListView x:Name="ContentView">
-            
-        </ListView>
+        <StackPanel>
+            <ListView x:Name="ContentView">
+
+            </ListView>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition></ColumnDefinition>
+                    <ColumnDefinition></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+
+                <Button x:Name="Edit"  Grid.Column="0" Content="Редактировать"></Button>
+                <Button x:Name="Delete" Grid.Column="1" Content="Удалить"></Button>
+            </Grid>
+
+            <Button x:Name="Export" Content="Экспорт в файл"></Button>
+        </StackPanel>
 
     </Grid>
 </Window>

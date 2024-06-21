@@ -214,7 +214,7 @@ namespace HarryManual
                         
             void ClickEvent()
             {
-                ItemWindow itemWindow = new ItemWindow(person, films, quotes);
+                ItemWindow itemWindow = new ItemWindow(_user, person, films, quotes);
 
                 itemWindow.Show();
             }
@@ -296,7 +296,7 @@ namespace HarryManual
 
             void ClickEvent()
             {
-                ItemWindow itemWindow = new ItemWindow(person, quote);
+                ItemWindow itemWindow = new ItemWindow(_user, person, quote);
 
                 itemWindow.Show();
             }
@@ -382,7 +382,7 @@ namespace HarryManual
 
             void ClickEvent()
             {
-                ItemWindow itemWindow = new ItemWindow(article);
+                ItemWindow itemWindow = new ItemWindow(_user, article);
 
                 itemWindow.Show();
             }
@@ -484,7 +484,7 @@ namespace HarryManual
 
             void ClickEvent()
             {
-                ItemWindow itemWindow = new ItemWindow(film, persons);
+                ItemWindow itemWindow = new ItemWindow(_user, film, persons);
 
                 itemWindow.Show();
             }
@@ -570,7 +570,7 @@ namespace HarryManual
 
             void ClickEvent()
             {
-                ItemWindow itemWindow = new ItemWindow(note, category);
+                ItemWindow itemWindow = new ItemWindow(_user, note, category);
 
                 itemWindow.Show();
             }
@@ -909,6 +909,13 @@ namespace HarryManual
 
             CategoryFilter.Items.Add(new ListViewItem() { Content = allButton });
 
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            ResultStack.Items.Clear();
+
+            ViewAllResults(sender, e);
         }
     }
 }

@@ -24,12 +24,12 @@ namespace HarryManual.DataAccess.Reps
 
         public int DeleteItem(int itemId)
         {
-            var articles = _dbContext.Articles.FirstOrDefault(a => a.ArticleId == itemId);
+            var articles = _dbContext.Films.FirstOrDefault(a => a.FilmId == itemId);
 
-            _dbContext.Articles.Remove(articles);
+            _dbContext.Films.Remove(articles);
             _dbContext.SaveChanges();
 
-            return articles.ArticleId;
+            return articles.FilmId;
         }
 
         public List<Film> GetItems()
